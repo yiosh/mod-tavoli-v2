@@ -6,7 +6,11 @@
         <span class="font-weight-light">MATERIAL DESIGN</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn flat href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank">
+      <v-btn
+        flat
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+      >
         <span class="mr-2">Latest Release</span>
       </v-btn>
     </v-toolbar>
@@ -50,7 +54,10 @@
                       :ref="group.table.tableConfig.name"
                       :config="group.table.tableConfig"
                     ></v-ellipse>
-                    <v-text :ref="group.table.textConfig.name" :config="group.table.textConfig"></v-text>
+                    <v-text
+                      :ref="group.table.textConfig.name"
+                      :config="group.table.textConfig"
+                    ></v-text>
                   </v-group>
                 </v-layer>
               </v-stage>
@@ -92,11 +99,18 @@
 
                       <v-layout>
                         <v-flex xs12 md6>
-                          <v-text-field v-model="createTableForm.text" label="Nome" required></v-text-field>
+                          <v-text-field
+                            v-model="createTableForm.text"
+                            label="Nome"
+                            required
+                          ></v-text-field>
                         </v-flex>
 
                         <v-flex xs12 md6>
-                          <v-text-field v-model="createTableForm.number" label="Numero"></v-text-field>
+                          <v-text-field
+                            v-model="createTableForm.number"
+                            label="Numero"
+                          ></v-text-field>
                         </v-flex>
                       </v-layout>
                     </v-container>
@@ -129,7 +143,9 @@
                         <v-icon class="fas fa-table"></v-icon>
                       </v-list-tile-action>
 
-                      <v-list-tile-title>{{ group.table.textConfig.text }}</v-list-tile-title>
+                      <v-list-tile-title>{{
+                        group.table.textConfig.text
+                      }}</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
                 </v-card>
@@ -355,39 +371,6 @@ export default {
       console.log("group", group);
       this.groups.push(group);
     }
-    // createSquare(size) {
-    //   let sizeVal;
-    //   switch (size) {
-    //     case "small":
-    //       sizeVal = 0.5;
-    //       break;
-    //     case "medium":
-    //       sizeVal = 1;
-    //       break;
-    //     case "large":
-    //       sizeVal = 1.5;
-    //       break;
-    //     default:
-    //       break;
-    //   }
-    //   let circle = {
-    //     id: this.circles.length,
-    //     title: "Circle" + (this.circles.length + 1),
-    //     config: {
-    //       name: "c" + (this.circles.length + 1),
-    //       x: 50,
-    //       y: 50,
-    //       scaleX: sizeVal,
-    //       scaleY: sizeVal,
-    //       radius: 70,
-    //       fill: "white",
-    //       stroke: "black",
-    //       strokeWidth: 4,
-    //       draggable: true
-    //     }
-    //   };
-    //   this.circles.push(circle);
-    // }
   }
 };
 </script>
