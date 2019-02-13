@@ -16,20 +16,21 @@
     </v-toolbar>
 
     <v-content>
-      <v-container fluid grid-list-md>
+      <!-- <v-container fluid fill-height grid-list-md> -->
+      <div class="main-container">
         <v-layout row wrap>
-          <v-flex xs12 md9 justify-center>
+          <v-flex xs12 sm8 md8 lg8>
             <Canvas></Canvas>
           </v-flex>
-
           <v-spacer></v-spacer>
-
-          <v-flex xs12 md3>
+          <v-flex xs12 sm4 md4 lg4>
             <Sidebar></Sidebar>
-            <GuestList></GuestList>
+
+            <!-- <v-btn @click="printCanvas">Print</v-btn> -->
           </v-flex>
         </v-layout>
-      </v-container>
+      </div>
+      <!-- </v-container> -->
     </v-content>
   </v-app>
 </template>
@@ -37,7 +38,6 @@
 <script>
 import Canvas from "./components/Canvas";
 import Sidebar from "./components/Sidebar";
-import GuestList from "./components/GuestList";
 import axios from "axios";
 import { mapState } from "vuex";
 import { EventBus } from "./event-bus.js";
@@ -46,8 +46,7 @@ export default {
   name: "App",
   components: {
     Canvas,
-    Sidebar,
-    GuestList
+    Sidebar
   },
   data: () => ({
     title: null
@@ -55,9 +54,18 @@ export default {
   }),
   computed: mapState(["layout"]),
   methods: {
-    // dialogClick() {
-    //   EventBus.$emit("button-click", !this.dialog);
-    // },
+    downloadURI(uri, name) {
+      let link = document.createElement("a");
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    printCanvas() {
+      let dataURL = this.$store.state.stage.toDataURL({ pixelRatio: 3 });
+      this.downloadURI(dataURL, "stage.png");
+    },
     fetchLayout() {
       axios
         .get(
@@ -95,4 +103,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.main-container {
+  display: grid;
+  margin: 1em;
+}
+</style>

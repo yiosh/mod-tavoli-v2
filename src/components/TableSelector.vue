@@ -10,15 +10,16 @@
           :id="group.name"
           v-for="group in groups"
           :key="group.name"
-          @click="tableSelect(group.name)"
+          :class
+          @click="tableSelect($event, group.name)"
         >
           <v-list-tile-action>
             <v-icon class="fas fa-table"></v-icon>
           </v-list-tile-action>
 
-          <v-list-tile-title>{{
-            group.table.textConfig.text
-          }}</v-list-tile-title>
+          <v-list-tile-title>
+            {{ group.table.textConfig.text }}
+          </v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-card>
@@ -35,7 +36,8 @@ export default {
   },
   methods: {
     // Select table on click and adds a transformer
-    tableSelect(group) {
+    tableSelect(e, group) {
+      console.log(e);
       let stage = this.$store.state.stage;
       let name = "." + String(group) + "-tbl";
       stage.find("Transformer").destroy();
@@ -51,3 +53,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.active {
+  background-color: aqua;
+}
+</style>

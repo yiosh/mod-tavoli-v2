@@ -51,12 +51,8 @@ import { EventBus } from "../event-bus.js";
 
 export default {
   name: "Canvas",
-  // props: { groups: Array, config: Object },
   data: () => ({
     dialog: false
-    // groups: this.$store.getters.GET_GROUPS,
-    // config: this.$store.getters.GET_CONFIG,
-    // storeState: store.state
   }),
   computed: {
     groups() {
@@ -73,13 +69,6 @@ export default {
     draglog(e) {
       console.log(e);
     },
-    // handleDblClick(group) {
-    //   let selectedGroup = _.find(this.groups, element => {
-    //     return element.name == group.name;
-    //   });
-    //   console.log("Group S", selectedGroup.table.id);
-    //   EventBus.$emit("table-dblclick", selectedGroup.table.id, !this.dialog);
-    // },
     stageClick(e) {
       let stage = this.$store.state.stage;
       // if click on empty area - remove all transformers
