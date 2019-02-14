@@ -8,7 +8,7 @@
       <v-list>
         <v-list-tile
           :id="group.name"
-          v-for="group in groups"
+          v-for="group in this.$store.getters.GET_GROUPS"
           :key="group.name"
           :class
           @click="tableSelect($event, group.name)"
@@ -17,9 +17,9 @@
             <v-icon class="fas fa-table"></v-icon>
           </v-list-tile-action>
 
-          <v-list-tile-title>
-            {{ group.table.textConfig.text }}
-          </v-list-tile-title>
+          <v-list-tile-title>{{
+            group.table.textConfig.text
+          }}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-card>
@@ -29,15 +29,15 @@
 <script>
 export default {
   name: "TableSelector",
+  data: () => ({}),
   computed: {
-    groups() {
-      return this.$store.getters.GET_GROUPS;
-    }
+    // groups() {
+    //   return this.$store.getters.GET_GROUPS;
+    // }
   },
   methods: {
     // Select table on click and adds a transformer
     tableSelect(e, group) {
-      console.log(e);
       let stage = this.$store.state.stage;
       let name = "." + String(group) + "-tbl";
       stage.find("Transformer").destroy();

@@ -16,6 +16,8 @@ export default new Vuex.Store({
       updatedAt: null,
       createdAt: null
     },
+    tablesFetched: [],
+    tableTypes: [],
     stage: null,
     layer: null,
     guests: [],
@@ -65,6 +67,9 @@ export default new Vuex.Store({
     SET_GUESTS(state, payload) {
       state.guests = payload;
     },
+    SET_TABLES_FETCHED(state, payload) {
+      state.tablesFetched = payload;
+    },
     ADD_NEW_TABLE(state, payload) {
       state.groups.push(payload);
     },
@@ -85,6 +90,9 @@ export default new Vuex.Store({
     SET_LAYER(state, payload) {
       state.commit("SET_LAYER", payload);
     },
+    SET_TABLES_FETCHED(state, payload) {
+      state.commit("SET_TABLES_FETCHED", payload);
+    },
     SET_GUESTS(state, payload) {
       state.commit("SET_GUESTS", payload);
     },
@@ -104,6 +112,9 @@ export default new Vuex.Store({
     },
     GET_LAYER(state) {
       return state.layer;
+    },
+    GET_TABLES_FETCHED(state) {
+      return state.tablesFetched;
     },
     GET_CONFIG(state) {
       return state.configKonva;

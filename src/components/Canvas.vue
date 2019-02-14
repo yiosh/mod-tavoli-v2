@@ -1,17 +1,21 @@
 <template>
-  <v-card width="1200">
-    <v-toolbar dark>
+  <v-card width="1200" style="margin: auto">
+    <v-toolbar dark color="#424242">
       <v-toolbar-title>Canvas</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-stage @click="stageClick" ref="stage" :config="config">
+    <v-stage
+      @click="stageClick"
+      ref="stage"
+      :config="this.$store.getters.GET_CONFIG"
+    >
       <v-layer ref="layer">
         <v-group
           :ref="group.name"
           @click="tableSelect(group.name)"
           @dragstart="draglog"
           @dragend="draglog"
-          v-for="group in groups"
+          v-for="group in this.$store.getters.GET_GROUPS"
           :config="group"
           :key="group.name"
         >
@@ -46,7 +50,7 @@
 </template>
 
 <script>
-import _ from "lodash";
+import axios from "axios";
 import { EventBus } from "../event-bus.js";
 
 export default {
@@ -54,14 +58,6 @@ export default {
   data: () => ({
     dialog: false
   }),
-  computed: {
-    groups() {
-      return this.$store.getters.GET_GROUPS;
-    },
-    config() {
-      return this.$store.getters.GET_CONFIG;
-    }
-  },
   methods: {
     log(e) {
       console.log(e);
@@ -73,26 +69,33 @@ export default {
       let stage = this.$store.state.stage;
       // if click on empty area - remove all transformers
       if (e.target === stage) {
-        this.$store.dispatch("CHANGE_SELECTED_GROUP", null);
-        stage.find("Transformer").destroy();
-        stage.draw();
-        return;
+        if (this.$store.getters.GET_SELECTED_GROUP != null) {
+          this.$store.dispatch("CHANGE_SELECTED_GROUP", null);
+          stage.find("Transformer").destroy();
+          stage.draw();
+          return;
+        }
       }
     },
     tableSelect(group) {
       let stage = this.$store.state.stage;
-      let name = "." + String(group) + "-tbl";
-      stage.find("Transformer").destroy();
-      // create new transformer
-      var tr = new window.Konva.Transformer();
-      let layer = this.$refs.layer.getStage(tr);
       let groupEl = stage.find("." + group)[0];
-      tr.attachTo(stage.find(name)[0]); // no idea what to do here ...
-      groupEl.add(tr);
-      layer.add(groupEl);
-      layer.draw();
-      this.$store.dispatch("CHANGE_SELECTED_GROUP", groupEl.attrs);
-      EventBus.$emit("table-select", groupEl.attrs.table.id);
+      if (this.$store.getters.GET_SELECTED_GROUP != groupEl.attrs) {
+        console.log("Target", group);
+        let name = "." + String(group) + "-tbl";
+        stage.find("Transformer").destroy();
+        // create new transformer
+        var tr = new window.Konva.Transformer();
+        let layer = this.$refs.layer.getStage(tr);
+
+        tr.attachTo(stage.find(name)[0]);
+        groupEl.add(tr);
+        layer.add(groupEl);
+        layer.draw();
+
+        this.$store.dispatch("CHANGE_SELECTED_GROUP", groupEl.attrs);
+        EventBus.$emit("table-select", groupEl.attrs.table.id);
+      }
     }
   },
   mounted() {

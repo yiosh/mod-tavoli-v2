@@ -1,9 +1,9 @@
 <template>
   <v-layout row justify-center>
     <v-dialog max-width="1250" v-model="dialog">
-      <v-btn slot="activator" @click="previewCanvas()" color="primary" dark
+      <!-- <v-btn slot="activator" @click="previewCanvas()" color="primary" dark
         >Preview</v-btn
-      >
+      >-->
       <v-card>
         <!-- <v-card-title>Guest List</v-card-title> -->
         <v-divider></v-divider>
@@ -27,6 +27,7 @@
 
 <script>
 import _ from "lodash";
+import { EventBus } from "../event-bus.js";
 
 export default {
   name: "GuestList",
@@ -71,6 +72,18 @@ export default {
       pwa.document.write(this.ImagetoPrint(source));
       pwa.document.close();
     }
+  },
+  created() {
+    EventBus.$on("preview-select", () => {
+      let stage = this.$store.state.stage;
+      // if click on empty area - remove all transformers
+      this.$store.dispatch("CHANGE_SELECTED_GROUP", null);
+      stage.find("Transformer").destroy();
+      stage.draw();
+
+      this.previewCanvas();
+      this.dialog = true;
+    });
   }
 };
 </script>
