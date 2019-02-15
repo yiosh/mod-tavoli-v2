@@ -17,7 +17,12 @@
               createTableForm.text,
               createTableForm.number,
               Number(createTableForm.size),
-              createTableForm.type
+              createTableForm.type,
+              groupsLength,
+              100,
+              100,
+              Number(createTableForm.angolare),
+              true
             )
           "
         >
@@ -44,6 +49,19 @@
                   <v-btn flat value="25">Picolo</v-btn>
                   <v-btn flat value="50">Mediano</v-btn>
                   <v-btn flat value="75">Grande</v-btn>
+                </v-btn-toggle>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
+              <v-flex xs12 sm6 class="py-2">
+                <p>Angolare</p>
+                <v-btn-toggle v-model="createTableForm.angolare">
+                  <v-btn flat value="0">0°</v-btn>
+                  <v-btn flat value="45">45°</v-btn>
+                  <v-btn flat value="90">90°</v-btn>
+                  <v-btn flat value="135">135°</v-btn>
+                  <v-btn flat value="180">180°</v-btn>
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
@@ -81,6 +99,7 @@
 
 <script>
 import { EventBus } from "../event-bus.js";
+import axios from "axios";
 
 export default {
   name: "CreateTableForm",
@@ -90,11 +109,17 @@ export default {
     createTableForm: {
       type: "circle",
       size: "25",
+      angolare: "0",
       text: "",
       number: ""
     },
     tableTypes: []
   }),
+  computed: {
+    groupsLength() {
+      return this.$store.getters.GET_GROUPS_LENGTH;
+    }
+  },
   methods: {
     // Parses from table id into Konva shape
     tableTypeParser(id) {
@@ -118,6 +143,27 @@ export default {
       }
       return type;
     },
+    tableTypeDeparser(type) {
+      let id;
+      switch (type) {
+        case "circle":
+          id = "2";
+          break;
+
+        case "square":
+          id = "3";
+          break;
+
+        case "rectangle":
+          id = "4";
+          break;
+
+        case "ellipse":
+          id = "5";
+          break;
+      }
+      return id;
+    },
     // Create table using tableTypes array and user input
     createTable(
       name,
@@ -126,20 +172,24 @@ export default {
       type,
       id = this.$store.getters.GET_GROUPS_LENGTH,
       x = 100,
-      y = 100
+      y = 100,
+      angolare = 0,
+      n = false
     ) {
       let uID =
         "_" +
         Math.random()
           .toString(36)
           .substr(2, 9);
+      let tableGroup;
       let groupName = "g" + uID;
       let tableName = "g" + uID + "-tbl";
       let textName = name ? name : "g" + uID + "-txt";
       let table = {};
       let textConfig = {
         name: textName,
-        text: name + number,
+        number,
+        text: name + (number == 0 ? "" : number),
         fontSize: 20,
         fontFamily: "Calibri",
         fill: "black",
@@ -157,6 +207,7 @@ export default {
             tableConfig: {
               name: tableName,
               radius: size,
+              rotation: angolare,
               fill: "white",
               stroke: "black",
               strokeWidth: 2
@@ -170,8 +221,9 @@ export default {
             textConfig,
             tableConfig: {
               name: tableName,
-              width: size * 2,
-              height: size * 2,
+              width: size,
+              height: size,
+              rotation: angolare,
               fill: "white",
               stroke: "black",
               strokeWidth: 2
@@ -186,7 +238,8 @@ export default {
             tableConfig: {
               name: tableName,
               width: size * 2,
-              height: size * 3,
+              height: size,
+              rotation: angolare,
               fill: "white",
               stroke: "black",
               strokeWidth: 2
@@ -204,6 +257,7 @@ export default {
                 x: size * 2,
                 y: size
               },
+              rotation: angolare,
               fill: "white",
               stroke: "black",
               strokeWidth: 2
@@ -224,6 +278,39 @@ export default {
         draggable: true,
         table
       };
+
+      const details = {
+        layout_id: this.$store.state.layout.id,
+        type_id: this.tableTypeDeparser(type),
+        table_name: name,
+        table_number: number,
+        table_group: tableGroup ? tableGroup : 0,
+        size,
+        x,
+        y,
+        angolare
+      };
+
+      if (n) {
+        axios
+          .get(
+            `https://demo.condivision.cloud/fl_api/tables-v1/?insert_table&token=1&layout_id=${
+              details.layout_id
+            }&type_id=${details.type_id}&table_name=${
+              details.table_name
+            }&table_number=${details.table_number}&table_group=${
+              details.table_group
+            }&size=${details.size}&x=${details.x}&y=${details.y}&angolare=${
+              details.angolare
+            }`
+          )
+          .then(function(response) {
+            console.log("Response", response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      }
       // Add new group to the store
       this.$store.dispatch("ADD_NEW_TABLE", group);
     }
@@ -235,7 +322,6 @@ export default {
 
     EventBus.$on("fetch-tables", () => {
       let tablesFetched = this.$store.getters.GET_TABLES_FETCHED;
-      console.log(tablesFetched.length);
       tablesFetched.forEach(payload => {
         this.createTable(
           payload.table_name,
@@ -244,7 +330,8 @@ export default {
           this.tableTypeParser(payload.type_id),
           payload.id,
           Number(payload.x),
-          Number(payload.y)
+          Number(payload.y),
+          Number(payload.angolare)
         );
       });
     });

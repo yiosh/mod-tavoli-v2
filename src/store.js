@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import _ from "lodash";
 
 Vue.use(Vuex);
 
@@ -78,6 +79,9 @@ export default new Vuex.Store({
     },
     CHANGE_SELECTED_GROUP(state, payload) {
       state.selectedGroup = payload;
+    },
+    CHANGE_GROUP(state, payload) {
+      state.selectedGroup = payload;
     }
   },
   actions: {
@@ -104,6 +108,9 @@ export default new Vuex.Store({
     },
     CHANGE_SELECTED_GROUP(state, payload) {
       state.commit("CHANGE_SELECTED_GROUP", payload);
+    },
+    CHANGE_GROUP(state, payload) {
+      state.commit("CHANGE_TABLE", payload);
     }
   },
   getters: {
@@ -130,6 +137,9 @@ export default new Vuex.Store({
     },
     GET_SELECTED_GROUP(state) {
       return state.selectedGroup;
+    },
+    GET_LAYOUT_ID(state) {
+      return state.layout.id;
     }
   }
 });

@@ -6,7 +6,6 @@
         <span class="font-weight-light">{{ layout.name }}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- <v-btn @click="handleDrawer">Open</v-btn> -->
     </v-toolbar>
 
     <v-content>
@@ -16,8 +15,6 @@
           <v-flex xs12 align-self-center>
             <Canvas></Canvas>
           </v-flex>
-          <!-- <v-spacer></v-spacer>
-          <v-flex xs12 sm4 md4 lg4></v-flex>-->
         </v-layout>
       </div>
       <!-- </v-container> -->
@@ -29,7 +26,6 @@
 <script>
 import Canvas from "./components/Canvas";
 import Sidebar from "./components/Sidebar";
-import { mapState } from "vuex";
 import { EventBus } from "./event-bus.js";
 import axios from "axios";
 
@@ -41,7 +37,6 @@ export default {
   },
   data: () => ({
     title: null
-    // dialog: false
   }),
   methods: {
     handleDrawer() {
@@ -86,10 +81,6 @@ export default {
         .then(response => {
           this.$store.dispatch("SET_TABLES_FETCHED", response.data.dati);
           EventBus.$emit("fetch-tables");
-          console.log("Tables", response.data.dati);
-          // response.data.dati.forEach(payload => {
-          //   EventBus.$emit("fetch-tables", payload);
-          // });
         })
         .catch(error => {
           // handle error
@@ -113,7 +104,7 @@ export default {
   },
   computed: {
     layout() {
-      return mapState(["layout"]);
+      return this.$store.state.layout;
     }
   },
   created() {
