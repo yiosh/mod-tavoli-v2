@@ -14,9 +14,9 @@
           <v-toolbar flat color="white">
             <v-spacer></v-spacer>
             <v-dialog v-model="guestDialog" max-width="500px">
-              <v-btn slot="activator" color="primary" dark class="mb-2">{{
-                formTitle
-              }}</v-btn>
+              <v-btn slot="activator" color="primary" dark class="mb-2">
+                {{ formTitle }}
+              </v-btn>
               <v-card>
                 <v-card-title>
                   <span class="headline">Add New Guest</span>
@@ -199,8 +199,9 @@ export default {
     }
   },
   created() {
-    EventBus.$on("table-select", id => {
+    EventBus.$on("table-select", group => {
       let guests = this.$store.state.guests;
+      let id = group.attrs.table.id;
 
       this.guests = _.filter(guests, element => {
         return element.table_id == id;

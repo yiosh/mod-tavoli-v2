@@ -46,9 +46,9 @@
               <v-flex xs12 sm6 class="py-2">
                 <p>Size</p>
                 <v-btn-toggle v-model="createTableForm.size">
-                  <v-btn flat value="25">Picolo</v-btn>
-                  <v-btn flat value="50">Mediano</v-btn>
-                  <v-btn flat value="75">Grande</v-btn>
+                  <v-btn flat value="30">Picolo</v-btn>
+                  <v-btn flat value="60">Mediano</v-btn>
+                  <v-btn flat value="90">Grande</v-btn>
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
@@ -108,7 +108,7 @@ export default {
     // Default values
     createTableForm: {
       type: "circle",
-      size: "25",
+      size: "30",
       angolare: "0",
       text: "",
       number: ""
@@ -169,8 +169,10 @@ export default {
       name,
       number = "",
       size,
+      // scaleX,
+      // scaleY,
       type,
-      id = this.$store.getters.GET_GROUPS_LENGTH,
+      id,
       x = 100,
       y = 100,
       angolare = 0,
@@ -194,19 +196,21 @@ export default {
         fontFamily: "Calibri",
         fill: "black",
         stroke: "black",
-        padding: size,
+        padding: 25,
         strokeWidth: 1
       };
 
       switch (type) {
         case "circle":
           table = {
-            id,
+            id: id ? id : null,
             type,
             textConfig,
             tableConfig: {
               name: tableName,
               radius: size,
+              // scaleX,
+              // scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -216,13 +220,15 @@ export default {
           break;
         case "square":
           table = {
-            id,
+            id: id ? id : null,
             type,
             textConfig,
             tableConfig: {
               name: tableName,
               width: size,
               height: size,
+              // scaleX,
+              // scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -232,13 +238,15 @@ export default {
           break;
         case "rectangle":
           table = {
-            id,
+            id: id ? id : null,
             type,
             textConfig,
             tableConfig: {
               name: tableName,
               width: size * 2,
               height: size,
+              // scaleX,
+              // scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -249,14 +257,16 @@ export default {
         case "ellipse":
           table = {
             id: id ? id : null,
-            type,
+            type: type,
             textConfig,
             tableConfig: {
               name: tableName,
               radius: {
-                x: size * 2,
-                y: size
+                x: size,
+                y: size * 2
               },
+              // scaleX: n ? scaleX * 2 : scaleX,
+              // scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -285,7 +295,7 @@ export default {
         table_name: name,
         table_number: number,
         table_group: tableGroup ? tableGroup : 0,
-        size,
+
         x,
         y,
         angolare
@@ -300,12 +310,14 @@ export default {
               details.table_name
             }&table_number=${details.table_number}&table_group=${
               details.table_group
-            }&size=${details.size}&x=${details.x}&y=${details.y}&angolare=${
+            }&size=${size}&x=${details.x}&y=${details.y}&angolare=${
               details.angolare
             }`
           )
           .then(function(response) {
             console.log("Response", response);
+            group.table.id = response.data.id;
+            console.log("New group", group);
           })
           .catch(function(error) {
             console.log(error);
@@ -313,6 +325,7 @@ export default {
       }
       // Add new group to the store
       this.$store.dispatch("ADD_NEW_TABLE", group);
+      this.dialog = false;
     }
   },
   created() {
@@ -322,11 +335,14 @@ export default {
 
     EventBus.$on("fetch-tables", () => {
       let tablesFetched = this.$store.getters.GET_TABLES_FETCHED;
+      console.log("tables", tablesFetched);
       tablesFetched.forEach(payload => {
         this.createTable(
           payload.table_name,
           Number(payload.table_number),
           Number(payload.size),
+          // Number(payload.scale_x),
+          // Number(payload.scale_y),
           this.tableTypeParser(payload.type_id),
           payload.id,
           Number(payload.x),

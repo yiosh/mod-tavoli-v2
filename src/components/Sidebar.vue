@@ -50,7 +50,6 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <CreateTableForm></CreateTableForm>
     <GuestList></GuestList>
     <PrintCanvas></PrintCanvas>
     <!-- <TableSelector></TableSelector> -->
@@ -58,7 +57,6 @@
 </template>
 
 <script>
-import CreateTableForm from "./CreateTableForm";
 import TableSelector from "./TableSelector";
 import GuestList from "./GuestList";
 import PrintCanvas from "./PrintCanvas";
@@ -67,7 +65,6 @@ import { EventBus } from "../event-bus.js";
 export default {
   name: "Sidebar",
   components: {
-    CreateTableForm,
     TableSelector,
     GuestList,
     PrintCanvas
@@ -75,7 +72,7 @@ export default {
   data: () => ({
     drawer: true,
     items: [
-      { title: "Create Table", icon: "add_box" },
+      // { title: "Create Table", icon: "add_box" },
       { title: "Guest List", icon: "people" },
       { title: "Preview", icon: "print" }
     ],
@@ -85,9 +82,6 @@ export default {
   methods: {
     handleDialog(element) {
       switch (element) {
-        case "Create Table":
-          EventBus.$emit("create-table-select");
-          break;
         case "Guest List":
           EventBus.$emit("guest-list-select");
           break;

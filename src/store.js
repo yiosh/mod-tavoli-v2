@@ -74,6 +74,53 @@ export default new Vuex.Store({
     ADD_NEW_TABLE(state, payload) {
       state.groups.push(payload);
     },
+    REMOVE_TABLE(state, payload) {
+      let indexToRemove = _.findIndex(state.groups, group => {
+        return group.table.id == payload;
+      });
+      console.log("Index", indexToRemove);
+      state.groups.splice(indexToRemove, 1);
+    },
+    EDIT_TABLE(state, payload) {
+      let indexToEdit = _.findIndex(state.groups, group => {
+        return group.table.id == payload.id;
+      });
+      const groupToEdit = _.find(state.groups, group => {
+        return group.table.id == payload.id;
+      });
+
+      console.log("Edit", groupToEdit);
+
+      const tableToEdit = groupToEdit.table;
+      if (payload.type == "circle") {
+        state.groups[indexToEdit].table.tableConfig.radius = payload.size;
+        // state.groups[indexToEdit].table.tableConfig.scaleX = 2;
+      }
+
+      if (payload.type == "square") {
+        state.groups[indexToEdit].table.tableConfig.height = payload.size;
+        state.groups[indexToEdit].table.tableConfig.width = payload.size;
+      }
+
+      if (payload.type == "rectangle") {
+        state.groups[indexToEdit].table.tableConfig.height = payload.size;
+        state.groups[indexToEdit].table.tableConfig.width = payload.size * 2;
+      }
+
+      if (payload.type == "ellipse") {
+        state.groups[indexToEdit].table.tableConfig.radius.x = payload.size * 2;
+        state.groups[indexToEdit].table.tableConfig.radius.y = payload.size;
+      }
+
+      console.log("tableToEdit", tableToEdit);
+      console.log("tableConfig", state.groups[indexToEdit].table.tableConfig);
+
+      tableToEdit.type = payload.type;
+      tableToEdit.tableConfig.rotation = payload.angolare;
+      tableToEdit.textConfig.name = payload.text;
+      tableToEdit.textConfig.number = payload.number;
+      tableToEdit.textConfig.text = payload.text + payload.number;
+    },
     CHANGE_DIALOG(state, payload) {
       state.dialog = payload;
     },
@@ -102,6 +149,12 @@ export default new Vuex.Store({
     },
     ADD_NEW_TABLE(state, payload) {
       state.commit("ADD_NEW_TABLE", payload);
+    },
+    REMOVE_TABLE(state, payload) {
+      state.commit("REMOVE_TABLE", payload);
+    },
+    EDIT_TABLE(state, payload) {
+      state.commit("EDIT_TABLE", payload);
     },
     CHANGE_DIALOG(state, payload) {
       state.commit("CHANGE_DIALOG", payload);

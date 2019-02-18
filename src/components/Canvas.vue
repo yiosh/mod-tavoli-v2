@@ -1,10 +1,8 @@
 <template>
   <v-card width="1200" style="margin: auto">
-    <v-toolbar dark color="#424242">
-      <v-toolbar-title>Canvas</v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
+    <Toolbar></Toolbar>
     <v-stage
+      class="grid"
       @click="stageClick"
       ref="stage"
       :config="this.$store.getters.GET_CONFIG"
@@ -13,7 +11,7 @@
         <v-group
           :ref="group.name"
           @click="tableSelect(group.name)"
-          @dragend="updateTable"
+          @dragend="moveTable"
           v-for="group in this.$store.getters.GET_GROUPS"
           :config="group"
           :key="group.name"
@@ -51,11 +49,15 @@
 
 <script>
 import axios from "axios";
+import Toolbar from "./Toolbar";
 import { EventBus } from "../event-bus.js";
 import _ from "lodash";
 
 export default {
   name: "Canvas",
+  components: {
+    Toolbar
+  },
   data: () => ({
     dialog: false
   }),
@@ -84,33 +86,18 @@ export default {
       }
       return id;
     },
-    updateTable(e) {
+    moveTable(e) {
       let group = e.target.attrs;
       let table = group.table;
-      let size;
+      let layout_id = this.$store.getters.GET_LAYOUT_ID;
+      console.log("Tabl moved", table);
+      console.log("Group moved", group);
 
-      if (table.type == "circle") {
-        size = table.tableConfig.radius;
-      }
-      if (table.type == "square" || table.type == "rectangle") {
-        size = table.tableConfig.height;
-      }
-      if (table.type == "ellipse") {
-        size = table.tableConfig.radius.y;
-      }
       axios
         .get(
-          `https://demo.condivision.cloud/fl_api/tables-v1/?update_table&token=1&table_id=${
+          `https://demo.condivision.cloud/fl_api/tables-v1/?move_table&token=1&table_id=${
             table.id
-          }&layout_id=${
-            this.$store.getters.GET_LAYOUT_ID
-          }&type_id=${this.tableTypeDeparser(table.type)}&table_name=${
-            table.textConfig.name
-          }&table_number=${
-            table.textConfig.number
-          }&table_group=0&size=${size}&x=${group.x}&y=${group.y}&angolare=${
-            table.tableConfig.rotation
-          }`
+          }&layout_id=${layout_id}&x=${group.x}&y=${group.y}`
         )
         .then(function(response) {
           console.log("Response", response);
@@ -132,6 +119,7 @@ export default {
           this.$store.dispatch("CHANGE_SELECTED_GROUP", null);
           stage.find("Transformer").destroy();
           stage.draw();
+          EventBus.$emit("table-unselect");
           return;
         }
       }
@@ -139,8 +127,9 @@ export default {
     tableSelect(group) {
       let stage = this.$store.state.stage;
       let groupEl = stage.find("." + group)[0];
+      console.log("Select", groupEl);
       if (this.$store.getters.GET_SELECTED_GROUP != groupEl.attrs) {
-        console.log("Target", group);
+        console.log("Target", groupEl);
         let name = "." + String(group) + "-tbl";
         stage.find("Transformer").destroy();
         // create new transformer
@@ -148,19 +137,15 @@ export default {
           rotateEnabled: false,
           resizeEnabled: false
         });
-        console.log("Trans", tr);
-        tr.on("rotationChange", e => {
-          console.log("Rotation", e);
-        });
-        let layer = this.$refs.layer.getStage(tr);
 
+        let layer = this.$refs.layer.getStage(tr);
         tr.attachTo(stage.find(name)[0]);
         groupEl.add(tr);
         layer.add(groupEl);
         layer.draw();
 
         this.$store.dispatch("CHANGE_SELECTED_GROUP", groupEl.attrs);
-        EventBus.$emit("table-select", groupEl.attrs.table.id);
+        EventBus.$emit("table-select", groupEl);
       }
     }
   },
@@ -170,3 +155,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.grid {
+  background-image: url(../assets/grid.png);
+}
+</style>
