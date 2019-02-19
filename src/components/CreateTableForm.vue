@@ -25,6 +25,7 @@
               true
             )
           "
+          v-model="valid"
         >
           <v-container>
             <v-layout>
@@ -36,8 +37,7 @@
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                    >{{ tableType.label }}</v-btn
-                  >
+                  >{{ tableType.label }}</v-btn>
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
@@ -71,15 +71,13 @@
                 <v-text-field
                   v-model="createTableForm.text"
                   label="Nome"
+                  :rules="nameRules"
                   required
                 ></v-text-field>
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field
-                  v-model="createTableForm.number"
-                  label="Numero"
-                ></v-text-field>
+                <v-text-field v-model="createTableForm.number" label="Numero"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -87,7 +85,7 @@
           <v-container>
             <v-layout justify-end>
               <v-flex xs12>
-                <v-btn type="submit" dark color="green">Crea</v-btn>
+                <v-btn :disabled="!valid" type="submit" dark color="green">Crea</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -105,19 +103,23 @@ export default {
   name: "CreateTableForm",
   data: () => ({
     dialog: false,
+    valid: true,
     // Default values
     createTableForm: {
       type: "circle",
       size: "30",
       angolare: "0",
       text: "",
-      number: ""
+      number: 0
     },
-    tableTypes: []
+    nameRules: [v => !!v || "Nome is required"]
   }),
   computed: {
     groupsLength() {
       return this.$store.getters.GET_GROUPS_LENGTH;
+    },
+    tableTypes() {
+      return this.$store.getters.GET_TABLE_TYPES;
     }
   },
   methods: {
@@ -310,7 +312,7 @@ export default {
               details.table_name
             }&table_number=${details.table_number}&table_group=${
               details.table_group
-            }&size=${size}&x=${details.x}&y=${details.y}&angolare=${
+            }&size=${size}&scale_x=${1.5}&x=${details.x}&y=${details.y}&angolare=${
               details.angolare
             }`
           )
@@ -326,17 +328,14 @@ export default {
       // Add new group to the store
       this.$store.dispatch("ADD_NEW_TABLE", group);
       this.dialog = false;
-    }
+    },
+    getTableTypes() {}
   },
   created() {
-    EventBus.$on("fetch-table-types", payload => {
-      this.tableTypes = payload;
-    });
-
     EventBus.$on("fetch-tables", () => {
       let tablesFetched = this.$store.getters.GET_TABLES_FETCHED;
-      console.log("tables", tablesFetched);
-      tablesFetched.forEach(payload => {
+      let tablesFetchedLength = tablesFetched.length;
+      tablesFetched.forEach((payload, index) => {
         this.createTable(
           payload.table_name,
           Number(payload.table_number),
@@ -349,6 +348,11 @@ export default {
           Number(payload.y),
           Number(payload.angolare)
         );
+        let percent = Math.floor((index / tablesFetchedLength) * 100);
+        if (tablesFetched.length == index + 1) {
+          percent = 100;
+        }
+        EventBus.$emit("loading", percent);
       });
     });
 

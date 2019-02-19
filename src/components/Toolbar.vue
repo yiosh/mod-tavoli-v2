@@ -16,6 +16,10 @@
     </v-toolbar>
     <CreateTableForm></CreateTableForm>
     <EditTableForm></EditTableForm>
+    <v-snackbar v-model="snackbar" top color="warning" :timeout="6000">
+      {{ snackbarMessage }}
+      <v-btn dark flat @click="snackbar = false">Close</v-btn>
+    </v-snackbar>
   </v-layout>
 </template>
 
@@ -30,6 +34,11 @@ export default {
     CreateTableForm,
     EditTableForm
   },
+  data: () => ({
+    selectedGroup: null,
+    snackbar: false,
+    snackbarMessage: null
+  }),
   methods: {
     handleClick(payload) {
       switch (payload) {
@@ -37,19 +46,19 @@ export default {
           EventBus.$emit("create-table-select");
           break;
         case "edit-table":
-          EventBus.$emit("edit-table-select");
+          if (this.selectedGroup) {
+            EventBus.$emit("edit-table-select");
+          } else {
+            this.snackbarMessage = "Please select a table to edit";
+            this.snackbar = true;
+          }
           break;
       }
     }
   },
   created() {
     EventBus.$on("table-select", group => {
-      let guests = this.$store.state.guests;
-      let id = group.attrs.table.id;
-
-      this.guests = _.filter(guests, element => {
-        return element.table_id == id;
-      });
+      this.selectedGroup = group;
     });
   }
 };

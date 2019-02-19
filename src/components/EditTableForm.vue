@@ -11,7 +11,7 @@
           </v-btn>
         </v-toolbar>
 
-        <v-form>
+        <v-form v-model="valid" @submit.prevent="save">
           <v-container>
             <v-layout>
               <v-flex xs12 sm6 class="py-2">
@@ -22,14 +22,24 @@
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                    >{{ tableType.label }}</v-btn
-                  >
+                  >{{ tableType.label }}</v-btn>
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
 
             <v-layout>
-              <v-flex xs12 sm6 class="py-2">
+              <v-flex xs12 sm6 md2 class="py-2">
+                <p>Angolare</p>
+                <v-text-field
+                  v-model="editedItem.angolare"
+                  :rules="angolareRules"
+                  suffix="°"
+                  label="Angolare"
+                  required
+                ></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm6 md6 class="py-2">
                 <p>Size</p>
                 <v-btn-toggle v-model="editedItem.size">
                   <v-btn flat :value="Number(30)">Picolo</v-btn>
@@ -40,32 +50,12 @@
             </v-layout>
 
             <v-layout>
-              <v-flex xs12 sm6 class="py-2">
-                <p>Angolare</p>
-                <v-btn-toggle v-model="editedItem.angolare">
-                  <v-btn flat :value="Number(0)">0°</v-btn>
-                  <v-btn flat :value="Number(45)">45°</v-btn>
-                  <v-btn flat :value="Number(90)">90°</v-btn>
-                  <v-btn flat :value="Number(135)">135°</v-btn>
-                  <v-btn flat :value="Number(180)">180°</v-btn>
-                </v-btn-toggle>
-              </v-flex>
-            </v-layout>
-
-            <v-layout>
               <v-flex xs12 md6>
-                <v-text-field
-                  v-model="editedItem.text"
-                  label="Nome"
-                  required
-                ></v-text-field>
+                <v-text-field :rules="nameRules" v-model="editedItem.text" label="Nome" required></v-text-field>
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field
-                  v-model="editedItem.number"
-                  label="Numero"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.number" label="Numero"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -73,8 +63,8 @@
           <v-container>
             <v-layout justify-end>
               <v-flex xs12>
-                <v-btn @click="save" dark color="green">Salva</v-btn>
                 <v-btn @click="remove" dark color="error">Elimina</v-btn>
+                <v-btn :disabled="!valid" type="submit" dark color="green">Salva</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -91,6 +81,7 @@ import axios from "axios";
 export default {
   name: "EditTableForm",
   data: () => ({
+    valid: true,
     layer: null,
     dialog: false,
     // Default values
@@ -98,7 +89,7 @@ export default {
       id: "",
       type: "circle",
       size: 30,
-      angolare: "0",
+      angolare: 0,
       text: "",
       number: ""
     },
@@ -106,15 +97,23 @@ export default {
       id: "",
       type: "circle",
       size: 30,
-      angolare: "0",
+      angolare: 0,
       text: "",
       number: ""
     },
-    tableTypes: []
+    // tableTypes: [],
+    angolareRules: [
+      v => !!v || "Angolare is required",
+      v => v <= 360 || "Angolare must be less than 360°"
+    ],
+    nameRules: [v => !!v || "Nome is required"]
   }),
   computed: {
     groupsLength() {
       return this.$store.getters.GET_GROUPS_LENGTH;
+    },
+    tableTypes() {
+      return this.$store.getters.GET_TABLE_TYPES;
     }
   },
   methods: {
@@ -232,13 +231,8 @@ export default {
   },
   mounted() {
     this.layer = this.$store.state.layer;
-    this.tableTypes = this.$store.state.tableTypes;
   },
   created() {
-    EventBus.$on("fetch-table-types", payload => {
-      this.tableTypes = payload;
-    });
-
     EventBus.$on("table-select", group => {
       this.fetchSelectedTable(group);
     });
