@@ -35,7 +35,7 @@
         <v-list-tile
           v-for="item in items"
           :key="item.title"
-          @click="handleDialog(item.title)"
+          @click="handleDialog(item.icon)"
         >
           <v-list-tile-action>
             <v-tooltip left slot="activator">
@@ -73,8 +73,8 @@ export default {
     drawer: true,
     items: [
       // { title: "Create Table", icon: "add_box" },
-      { title: "Guest List", icon: "people" },
-      { title: "Preview", icon: "print" }
+      { title: "Elenco degli Ospiti", icon: "people" },
+      { title: "Anteprima", icon: "print" }
     ],
     mini: true,
     right: null
@@ -82,10 +82,11 @@ export default {
   methods: {
     handleDialog(element) {
       switch (element) {
-        case "Guest List":
+        case "people":
           EventBus.$emit("guest-list-select");
           break;
-        case "Preview":
+        case "print":
+          console.log("clicked");
           EventBus.$emit("preview-select");
           break;
       }

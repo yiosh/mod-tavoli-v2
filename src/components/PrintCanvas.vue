@@ -13,12 +13,14 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-btn color="blue darken-1" flat @click="dialog = false"
-            >Close</v-btn
+            >Chiudi</v-btn
           >
-          <v-btn dark color="blue darken-1" @click="PrintImage(src)"
-            >Print</v-btn
-          >
-          <v-btn color="success" @click="downloadCanvas">Download</v-btn>
+          <v-btn dark color="blue darken-1" @click="PrintImage(src)">
+            <i class="fas fa-print icon-margin"></i>Stampare
+          </v-btn>
+          <v-btn color="success" @click="downloadCanvas">
+            <i class="fas fa-file-download icon-margin"></i>Scaricare
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -75,6 +77,7 @@ export default {
   },
   created() {
     EventBus.$on("preview-select", () => {
+      console.log("recieved");
       let stage = this.$store.state.stage;
       // if click on empty area - remove all transformers
       this.$store.dispatch("CHANGE_SELECTED_GROUP", null);
@@ -92,5 +95,8 @@ export default {
 iframe {
   height: 80vh;
   width: 100%;
+}
+.icon-margin {
+  margin-right: 0.5em;
 }
 </style>

@@ -5,13 +5,17 @@
       <v-spacer></v-spacer>
       <v-btn flat @click="handleClick('create-table')">
         <i class="fas fa-plus-circle icon-margin"></i>
-        Add New Table
+        Aggiungi Tavolo
       </v-btn>
-      <v-divider vertical></v-divider>
+      <v-divider v-if="selectedGroup != null" vertical></v-divider>
 
-      <v-btn flat @click="handleClick('edit-table')">
+      <v-btn
+        v-if="selectedGroup != null"
+        flat
+        @click="handleClick('edit-table')"
+      >
         <i class="far fa-edit icon-margin"></i>
-        Edit Table
+        Modifica Tavolo
       </v-btn>
     </v-toolbar>
     <CreateTableForm></CreateTableForm>
@@ -59,6 +63,10 @@ export default {
   created() {
     EventBus.$on("table-select", group => {
       this.selectedGroup = group;
+    });
+
+    EventBus.$on("table-unselect", () => {
+      this.selectedGroup = null;
     });
   }
 };

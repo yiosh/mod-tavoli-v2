@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
         <v-toolbar dark>
-          <v-toolbar-title>Crea tavolo</v-toolbar-title>
+          <v-toolbar-title>Aggiungi Tavolo</v-toolbar-title>
           <v-spacer></v-spacer>
 
           <v-btn icon @click="dialog = false">
@@ -30,39 +30,41 @@
           <v-container>
             <v-layout>
               <v-flex xs12 sm6 class="py-2">
-                <p>Type</p>
+                <p>Tipo</p>
                 <v-btn-toggle v-model="createTableForm.type">
                   <v-btn
                     v-for="tableType in tableTypes"
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                  >{{ tableType.label }}</v-btn>
+                    >{{ tableType.label }}</v-btn
+                  >
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
 
             <v-layout>
-              <v-flex xs12 sm6 class="py-2">
-                <p>Size</p>
+              <v-flex xs12 sm6 md6 class="py-2">
+                <p>Dimensione</p>
                 <v-btn-toggle v-model="createTableForm.size">
-                  <v-btn flat value="30">Picolo</v-btn>
-                  <v-btn flat value="60">Mediano</v-btn>
-                  <v-btn flat value="90">Grande</v-btn>
+                  <v-btn flat :value="Number(30)">Piccolo</v-btn>
+                  <v-btn flat :value="Number(60)">Medio</v-btn>
+                  <v-btn flat :value="Number(90)">Grande</v-btn>
                 </v-btn-toggle>
               </v-flex>
-            </v-layout>
-
-            <v-layout>
-              <v-flex xs12 sm6 class="py-2">
+              <v-flex xs12 sm6 md5 class="py-2">
                 <p>Angolare</p>
-                <v-btn-toggle v-model="createTableForm.angolare">
-                  <v-btn flat value="0">0°</v-btn>
-                  <v-btn flat value="45">45°</v-btn>
-                  <v-btn flat value="90">90°</v-btn>
-                  <v-btn flat value="135">135°</v-btn>
-                  <v-btn flat value="180">180°</v-btn>
-                </v-btn-toggle>
+                <v-slider
+                  min="0"
+                  max="360"
+                  v-model="createTableForm.angolare"
+                ></v-slider>
+              </v-flex>
+              <v-flex xs12 sm6 md1 class="py-2">
+                <v-text-field
+                  suffix="°"
+                  v-model="createTableForm.angolare"
+                ></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -77,7 +79,10 @@
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field v-model="createTableForm.number" label="Numero"></v-text-field>
+                <v-text-field
+                  v-model="createTableForm.number"
+                  label="Numero"
+                ></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -85,7 +90,9 @@
           <v-container>
             <v-layout justify-end>
               <v-flex xs12>
-                <v-btn :disabled="!valid" type="submit" dark color="green">Crea</v-btn>
+                <v-btn :disabled="!valid" type="submit" dark color="green"
+                  >Crea</v-btn
+                >
               </v-flex>
             </v-layout>
           </v-container>
@@ -107,7 +114,7 @@ export default {
     // Default values
     createTableForm: {
       type: "circle",
-      size: "30",
+      size: 30,
       angolare: "0",
       text: "",
       number: 0
@@ -312,9 +319,9 @@ export default {
               details.table_name
             }&table_number=${details.table_number}&table_group=${
               details.table_group
-            }&size=${size}&scale_x=${1.5}&x=${details.x}&y=${details.y}&angolare=${
-              details.angolare
-            }`
+            }&size=${size}&scale_x=${1.5}&x=${details.x}&y=${
+              details.y
+            }&angolare=${details.angolare}`
           )
           .then(function(response) {
             console.log("Response", response);

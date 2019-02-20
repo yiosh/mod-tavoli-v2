@@ -15,47 +15,59 @@
           <v-container>
             <v-layout>
               <v-flex xs12 sm6 class="py-2">
-                <p>Type</p>
+                <p>Tipo</p>
                 <v-btn-toggle v-model="editedItem.type">
                   <v-btn
                     v-for="tableType in tableTypes"
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                  >{{ tableType.label }}</v-btn>
+                    >{{ tableType.label }}</v-btn
+                  >
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
 
             <v-layout>
-              <v-flex xs12 sm6 md2 class="py-2">
+              <v-flex xs12 sm6 md6 class="py-2">
+                <p>Dimensione</p>
+                <v-btn-toggle v-model="editedItem.size">
+                  <v-btn flat :value="Number(30)">Piccolo</v-btn>
+                  <v-btn flat :value="Number(60)">Medio</v-btn>
+                  <v-btn flat :value="Number(90)">Grande</v-btn>
+                </v-btn-toggle>
+              </v-flex>
+              <v-flex xs12 sm6 md5 class="py-2">
                 <p>Angolare</p>
-                <v-text-field
+                <v-slider
+                  min="0"
+                  max="360"
                   v-model="editedItem.angolare"
-                  :rules="angolareRules"
+                ></v-slider>
+              </v-flex>
+              <v-flex xs12 sm6 md1 class="py-2">
+                <v-text-field
                   suffix="°"
-                  label="Angolare"
+                  v-model="editedItem.angolare"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
+              <v-flex xs12 md6>
+                <v-text-field
+                  :rules="nameRules"
+                  v-model="editedItem.text"
+                  label="Nome"
                   required
                 ></v-text-field>
               </v-flex>
 
-              <v-flex xs12 sm6 md6 class="py-2">
-                <p>Size</p>
-                <v-btn-toggle v-model="editedItem.size">
-                  <v-btn flat :value="Number(30)">Picolo</v-btn>
-                  <v-btn flat :value="Number(60)">Mediano</v-btn>
-                  <v-btn flat :value="Number(90)">Grande</v-btn>
-                </v-btn-toggle>
-              </v-flex>
-            </v-layout>
-
-            <v-layout>
               <v-flex xs12 md6>
-                <v-text-field :rules="nameRules" v-model="editedItem.text" label="Nome" required></v-text-field>
-              </v-flex>
-
-              <v-flex xs12 md6>
-                <v-text-field v-model="editedItem.number" label="Numero"></v-text-field>
+                <v-text-field
+                  v-model="editedItem.number"
+                  label="Numero"
+                ></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -64,7 +76,9 @@
             <v-layout justify-end>
               <v-flex xs12>
                 <v-btn @click="remove" dark color="error">Elimina</v-btn>
-                <v-btn :disabled="!valid" type="submit" dark color="green">Salva</v-btn>
+                <v-btn :disabled="!valid" type="submit" dark color="green"
+                  >Salva</v-btn
+                >
               </v-flex>
             </v-layout>
           </v-container>

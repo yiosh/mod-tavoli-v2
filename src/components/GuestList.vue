@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog">
       <v-card>
         <v-toolbar dark color="#424242">
-          <v-toolbar-title>Guest List</v-toolbar-title>
+          <v-toolbar-title>Elenco degli Ospiti</v-toolbar-title>
           <v-spacer></v-spacer>
 
           <v-btn icon @click="dialog = false">
@@ -19,7 +19,7 @@
               </v-btn>
               <v-card>
                 <v-card-title>
-                  <span class="headline">Add New Guest</span>
+                  <span class="headline">Aggiungi Nuovo Ospite</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -40,31 +40,31 @@
                       <v-flex xs12 sm6 md3>
                         <v-text-field
                           v-model="editedItem.peoples"
-                          label="People"
+                          label="Persone"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
                           v-model="editedItem.baby"
-                          label="Babies"
+                          label="Bambini"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
                           v-model="editedItem.chairs_only"
-                          label="Chairs"
+                          label="Sedie"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
                           v-model="editedItem.high_chair"
-                          label="Highchair"
+                          label="Seggiolone"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12>
                         <v-text-field
                           v-model="editedItem.note_intolleranze"
-                          label="Note"
+                          label="Nota"
                         ></v-text-field>
                       </v-flex>
                     </v-layout>
@@ -74,9 +74,9 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" flat @click="close"
-                    >Cancel</v-btn
+                    >Chiudi</v-btn
                   >
-                  <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                  <v-btn color="blue darken-1" flat @click="save">Salva</v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -105,15 +105,17 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-btn color="blue darken-1" flat @click="dialog = false"
-            >Close</v-btn
+            >Chiudi</v-btn
           >
-          <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
+          <v-btn color="blue darken-1" flat @click="dialog = false"
+            >Salva</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-snackbar v-model="snackbar" top color="warning" :timeout="6000"
-      >You need to select a table to open its guest list
-      <v-btn dark flat @click="snackbar = false">Close</v-btn>
+      >Devi selezionare un tavolo per aprire la sua lista degli ospiti
+      <v-btn dark flat @click="snackbar = false">Chiudi</v-btn>
     </v-snackbar>
   </v-layout>
 </template>
@@ -165,7 +167,9 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Add New Guest" : "Edit Guest";
+      return this.editedIndex === -1
+        ? "Aggiungi Nuovo Ospite"
+        : "Modifica Ospite";
     }
   },
   methods: {
