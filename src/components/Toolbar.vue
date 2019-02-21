@@ -1,7 +1,7 @@
 <template>
   <v-layout>
     <v-toolbar dark color="#424242">
-      <v-toolbar-title>Canvas</v-toolbar-title>
+      <v-toolbar-title>{{ layoutName }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn flat @click="handleClick('create-table')">
         <i class="fas fa-plus-circle icon-margin"></i>
@@ -12,6 +12,7 @@
       <v-btn
         v-if="selectedGroup != null"
         flat
+        ref="edit-table"
         @click="handleClick('edit-table')"
       >
         <i class="far fa-edit icon-margin"></i>
@@ -43,6 +44,11 @@ export default {
     snackbar: false,
     snackbarMessage: null
   }),
+  computed: {
+    layoutName() {
+      return this.$store.state.layout.name;
+    }
+  },
   methods: {
     handleClick(payload) {
       switch (payload) {
@@ -67,6 +73,10 @@ export default {
 
     EventBus.$on("table-unselect", () => {
       this.selectedGroup = null;
+    });
+
+    EventBus.$on("edit-table-dblclick", () => {
+      EventBus.$emit("edit-table-select");
     });
   }
 };

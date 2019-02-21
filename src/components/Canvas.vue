@@ -1,18 +1,24 @@
 <template>
-  <v-card width="1200" style="margin: auto">
+  <v-card
+    :class="{
+      horizontal: orientation == 0,
+      vertical: orientation == 1
+    }"
+    style="margin: auto"
+  >
     <Toolbar></Toolbar>
     <v-stage
-      class="grid"
+      :class="{ grid: this.$store.state.layout.orientation == 0 }"
       @click="stageClick"
       ref="stage"
-      :config="this.$store.getters.GET_CONFIG"
+      :config="stageConfig"
     >
       <v-layer ref="layer">
         <v-group
           :ref="group.name"
           @click="tableSelect(group.name)"
           @dragend="moveTable"
-          v-for="group in this.$store.getters.GET_GROUPS"
+          v-for="group in groups"
           :config="group"
           :key="group.name"
         >
@@ -51,7 +57,6 @@
 import axios from "axios";
 import Toolbar from "./Toolbar";
 import { EventBus } from "../event-bus.js";
-import _ from "lodash";
 
 export default {
   name: "Canvas",
@@ -61,6 +66,20 @@ export default {
   data: () => ({
     dialog: false
   }),
+  computed: {
+    hostname() {
+      return this.$store.getters.GET_HOSTNAME;
+    },
+    orientation() {
+      return this.$store.state.layout.orientation;
+    },
+    stageConfig() {
+      return this.$store.getters.GET_CONFIG;
+    },
+    groups() {
+      return this.$store.getters.GET_GROUPS;
+    }
+  },
   methods: {
     log(e) {
       console.log(e);
@@ -90,12 +109,12 @@ export default {
       let group = e.target.attrs;
       let table = group.table;
       let layout_id = this.$store.getters.GET_LAYOUT_ID;
-      console.log("Tabl moved", table);
-      console.log("Group moved", group);
 
       axios
         .get(
-          `https://demo.condivision.cloud/fl_api/tables-v1/?move_table&token=1&table_id=${
+          `https://${
+            this.hostname
+          }/fl_api/tables-v1/?move_table&token=1&table_id=${
             table.id
           }&layout_id=${layout_id}&x=${group.x}&y=${group.y}`
         )
@@ -127,9 +146,8 @@ export default {
     tableSelect(group) {
       let stage = this.$store.state.stage;
       let groupEl = stage.find("." + group)[0];
-      console.log("Select", groupEl);
+      console.log("Target", groupEl);
       if (this.$store.getters.GET_SELECTED_GROUP != groupEl.attrs) {
-        console.log("Target", groupEl);
         let name = "." + String(group) + "-tbl";
         stage.find("Transformer").destroy();
         // create new transformer
@@ -159,5 +177,14 @@ export default {
 <style scoped>
 .grid {
   background-image: url(../assets/grid.png);
+}
+
+.vertical {
+  width: 792px;
+  height: 1200px;
+}
+
+.horizontal {
+  width: 1200px;
 }
 </style>

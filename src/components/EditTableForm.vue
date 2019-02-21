@@ -16,7 +16,7 @@
             <v-layout>
               <v-flex xs12 sm6 class="py-2">
                 <p>Tipo</p>
-                <v-btn-toggle v-model="editedItem.type">
+                <v-btn-toggle v-model="editedItem.type" mandatory>
                   <v-btn
                     v-for="tableType in tableTypes"
                     flat
@@ -31,23 +31,53 @@
             <v-layout>
               <v-flex xs12 sm6 md6 class="py-2">
                 <p>Dimensione</p>
-                <v-btn-toggle v-model="editedItem.size">
+                <v-btn-toggle v-model="editedItem.size" mandatory>
                   <v-btn flat :value="Number(30)">Piccolo</v-btn>
                   <v-btn flat :value="Number(60)">Medio</v-btn>
                   <v-btn flat :value="Number(90)">Grande</v-btn>
                 </v-btn-toggle>
               </v-flex>
-              <v-flex xs12 sm6 md5 class="py-2">
+              <v-flex xs12 sm3 md4 class="py-2">
+                <p>Scala</p>
+                <v-slider
+                  v-model="editedItem.scale"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                ></v-slider>
+              </v-flex>
+              <v-flex xs12 sm3 md2 class="py-2">
+                <v-text-field
+                  suffix="°"
+                  type="number"
+                  v-model="editedItem.scale"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
+              <v-flex xs12 sm6 md6 class="py-2">
                 <p>Angolare</p>
+                <v-btn-toggle v-model="editedItem.angolare" mandatory>
+                  <v-btn flat :value="Number(0)">0°</v-btn>
+                  <v-btn flat :value="Number(45)">45°</v-btn>
+                  <v-btn flat :value="Number(90)">90°</v-btn>
+                  <v-btn flat :value="Number(180)">180°</v-btn>
+                  <v-btn flat :value="customAngolareVal">Costume</v-btn>
+                </v-btn-toggle>
+              </v-flex>
+              <!-- <v-flex xs12 sm6 md4 class="py-2">
+                <p></p>
                 <v-slider
                   min="0"
                   max="360"
                   v-model="editedItem.angolare"
                 ></v-slider>
-              </v-flex>
-              <v-flex xs12 sm6 md1 class="py-2">
+              </v-flex>-->
+              <v-flex xs12 sm6 md2 class="py-2" mandatory>
                 <v-text-field
                   suffix="°"
+                  type="number"
                   v-model="editedItem.angolare"
                 ></v-text-field>
               </v-flex>
@@ -103,6 +133,7 @@ export default {
       id: "",
       type: "circle",
       size: 30,
+      scale: 1,
       angolare: 0,
       text: "",
       number: ""
@@ -111,6 +142,7 @@ export default {
       id: "",
       type: "circle",
       size: 30,
+      scale: 1,
       angolare: 0,
       text: "",
       number: ""
@@ -128,9 +160,23 @@ export default {
     },
     tableTypes() {
       return this.$store.getters.GET_TABLE_TYPES;
+    },
+    customAngolareVal() {
+      return this.editedItem.angolare == 0 ||
+        this.editedItem.angolare == 45 ||
+        this.editedItem.angolare == 90 ||
+        this.editedItem.angolare == 180
+        ? 91
+        : this.editedItem.angolare;
     }
   },
   methods: {
+    enforceMandatory() {
+      this.angolareCustom == true;
+    },
+    angolareCustomClick() {
+      this.angolareCustom = false;
+    },
     // Parses from table id into Konva shape
     tableTypeParser(id) {
       let type;
@@ -175,7 +221,7 @@ export default {
       return id;
     },
     fetchSelectedTable(group) {
-      const table = group.attrs.table;
+      let table = group.attrs.table;
       let size;
 
       if (table.type == "circle") {
@@ -185,40 +231,70 @@ export default {
         size = table.tableConfig.height;
       }
       if (table.type == "ellipse") {
-        size = table.tableConfig.radius.x;
+        size = table.tableConfig.radiusX;
       }
-
-      console.log("Group", group);
 
       let item = {
         id: table.id,
         type: table.type,
         size: Number(size),
+        scale: 1,
         angolare: Number(table.tableConfig.rotation),
         text: table.textConfig.name,
         number: table.textConfig.number
       };
       this.editedItem = Object.assign({}, item);
+      this.defaultItem = Object.assign({}, item);
     },
     save() {
-      this.$store.dispatch("EDIT_TABLE", this.editedItem);
-      axios
-        .get(
-          `https://demo.condivision.cloud/fl_api/tables-v1/?update_table&token=1&layout_id=${
-            this.$store.state.layout.id
-          }&table_id=${this.editedItem.id}&type_id=${this.tableTypeDeparser(
-            this.editedItem.type
-          )}&table_name=${this.editedItem.text}&table_number=${
-            this.editedItem.number
-          }&size=${this.editedItem.size}&angolare=${this.editedItem.angolare}`
-        )
-        .then(function(response) {
-          console.log("Response", response);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-      // this.$store.state.layer.draw();
+      let angolare =
+        (this.editedItem.angolare + this.defaultItem.angolare) % 360;
+
+      if (this.editedItem.angolare == this.defaultItem.angolare) {
+        angolare = this.editedItem.angolare;
+      }
+
+      if (this.editedItem.angolare == 0) {
+        angolare = 0;
+      }
+
+      let newItem = {
+        id: this.editedItem.id,
+        type: this.editedItem.type,
+        size: this.editedItem.size,
+        scale: this.editedItem.size,
+        angolare,
+        text: this.editedItem.text,
+        number: this.editedItem.number
+      };
+
+      if (
+        JSON.stringify(this.editedItem) !== JSON.stringify(this.defaultItem)
+      ) {
+        this.$store.dispatch("EDIT_TABLE", newItem);
+        this.$store.state.stage.draw();
+        this.defaultItem = Object.assign({}, newItem);
+
+        axios
+          .get(
+            `https://${
+              this.$store.state.hostname
+            }/fl_api/tables-v1/?update_table&token=1&layout_id=${
+              this.$store.state.layout.id
+            }&table_id=${this.editedItem.id}&type_id=${this.tableTypeDeparser(
+              this.editedItem.type
+            )}&table_name=${this.editedItem.text}&table_number=${
+              this.editedItem.number
+            }&size=${this.editedItem.size}&angolare=${newItem.angolare}`
+          )
+          .then(function(response) {
+            console.log("Response", response);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+        // this.$store.state.layer.draw();
+      }
       this.dialog = false;
     },
     remove() {
@@ -228,7 +304,9 @@ export default {
         this.$store.dispatch("REMOVE_TABLE", this.editedItem.id);
         axios
           .get(
-            `https://demo.condivision.cloud/fl_api/tables-v1/?delete_table&token=1&layout_id=${
+            `https://${
+              this.$store.state.hostname
+            }/fl_api/tables-v1/?delete_table&token=1&layout_id=${
               this.$store.state.layout.id
             }&table_id=${this.editedItem.id}`
           )

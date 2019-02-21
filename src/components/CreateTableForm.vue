@@ -31,7 +31,7 @@
             <v-layout>
               <v-flex xs12 sm6 class="py-2">
                 <p>Tipo</p>
-                <v-btn-toggle v-model="createTableForm.type">
+                <v-btn-toggle v-model="createTableForm.type" mandatory>
                   <v-btn
                     v-for="tableType in tableTypes"
                     flat
@@ -46,23 +46,45 @@
             <v-layout>
               <v-flex xs12 sm6 md6 class="py-2">
                 <p>Dimensione</p>
-                <v-btn-toggle v-model="createTableForm.size">
+                <v-btn-toggle v-model="createTableForm.size" mandatory>
                   <v-btn flat :value="Number(30)">Piccolo</v-btn>
                   <v-btn flat :value="Number(60)">Medio</v-btn>
                   <v-btn flat :value="Number(90)">Grande</v-btn>
                 </v-btn-toggle>
               </v-flex>
-              <v-flex xs12 sm6 md5 class="py-2">
-                <p>Angolare</p>
+              <v-flex xs12 sm3 md4 class="py-2">
+                <p>Scala</p>
                 <v-slider
-                  min="0"
-                  max="360"
-                  v-model="createTableForm.angolare"
+                  v-model="createTableForm.scale"
+                  step="0.1"
+                  min="1"
+                  max="5"
                 ></v-slider>
               </v-flex>
-              <v-flex xs12 sm6 md1 class="py-2">
+              <v-flex xs12 sm3 md2 class="py-2">
                 <v-text-field
                   suffix="°"
+                  type="number"
+                  v-model="createTableForm.scale"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
+              <v-flex xs12 sm6 md6 class="py-2">
+                <p>Angolare</p>
+                <v-btn-toggle v-model="createTableForm.angolare" mandatory>
+                  <v-btn flat :value="Number(0)">0°</v-btn>
+                  <v-btn flat :value="Number(45)">45°</v-btn>
+                  <v-btn flat :value="Number(90)">90°</v-btn>
+                  <v-btn flat :value="Number(180)">180°</v-btn>
+                  <v-btn flat :value="customAngolareVal">Costume</v-btn>
+                </v-btn-toggle>
+              </v-flex>
+              <v-flex xs12 sm6 md2 class="py-2">
+                <v-text-field
+                  suffix="°"
+                  type="number"
                   v-model="createTableForm.angolare"
                 ></v-text-field>
               </v-flex>
@@ -115,7 +137,8 @@ export default {
     createTableForm: {
       type: "circle",
       size: 30,
-      angolare: "0",
+      scale: 1,
+      angolare: 0,
       text: "",
       number: 0
     },
@@ -127,6 +150,14 @@ export default {
     },
     tableTypes() {
       return this.$store.getters.GET_TABLE_TYPES;
+    },
+    customAngolareVal() {
+      return this.createTableForm.angolare == 0 ||
+        this.createTableForm.angolare == 45 ||
+        this.createTableForm.angolare == 90 ||
+        this.createTableForm.angolare == 180
+        ? 91
+        : this.createTableForm.angolare;
     }
   },
   methods: {
@@ -187,6 +218,7 @@ export default {
       angolare = 0,
       n = false
     ) {
+      // angolare = (angolare + 180) % 360;
       let uID =
         "_" +
         Math.random()
@@ -270,10 +302,8 @@ export default {
             textConfig,
             tableConfig: {
               name: tableName,
-              radius: {
-                x: size,
-                y: size * 2
-              },
+              radiusX: size,
+              radiusY: size * 2,
               // scaleX: n ? scaleX * 2 : scaleX,
               // scaleY,
               rotation: angolare,
@@ -304,7 +334,6 @@ export default {
         table_name: name,
         table_number: number,
         table_group: tableGroup ? tableGroup : 0,
-
         x,
         y,
         angolare
@@ -313,7 +342,9 @@ export default {
       if (n) {
         axios
           .get(
-            `https://demo.condivision.cloud/fl_api/tables-v1/?insert_table&token=1&layout_id=${
+            `https://${
+              this.$store.state.hostname
+            }/fl_api/tables-v1/?insert_table&token=1&layout_id=${
               details.layout_id
             }&type_id=${details.type_id}&table_name=${
               details.table_name
@@ -355,11 +386,10 @@ export default {
           Number(payload.y),
           Number(payload.angolare)
         );
-        let percent = Math.floor((index / tablesFetchedLength) * 100);
+
         if (tablesFetched.length == index + 1) {
-          percent = 100;
+          EventBus.$emit("loading-done");
         }
-        EventBus.$emit("loading", percent);
       });
     });
 

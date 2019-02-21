@@ -6,6 +6,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    hostname:
+      window.location.hostname === "localhost"
+        ? "demo.condivision.cloud"
+        : window.location.hostname,
     selectedGroup: null,
     layout: {
       id: null,
@@ -111,15 +115,15 @@ export default new Vuex.Store({
       }
 
       if (payload.type == "ellipse") {
-        state.groups[indexToEdit].table.tableConfig.radius.x = payload.size * 2;
-        state.groups[indexToEdit].table.tableConfig.radius.y = payload.size;
+        state.groups[indexToEdit].table.tableConfig.radiusX = payload.size;
+        state.groups[indexToEdit].table.tableConfig.radiusY = payload.size * 2;
       }
 
       console.log("tableToEdit", tableToEdit);
       console.log("tableConfig", state.groups[indexToEdit].table.tableConfig);
 
       tableToEdit.type = payload.type;
-      tableToEdit.tableConfig.rotation = payload.angolare;
+      tableToEdit.tableConfig.rotation = Number(payload.angolare);
       tableToEdit.textConfig.name = payload.text;
       tableToEdit.textConfig.number = payload.number;
       tableToEdit.textConfig.text = payload.text + payload.number;
@@ -132,6 +136,10 @@ export default new Vuex.Store({
     },
     CHANGE_GROUP(state, payload) {
       state.selectedGroup = payload;
+    },
+    CHANGE_ORIENTATION(state, payload) {
+      state.configKonva.width = payload.width;
+      state.configKonva.height = payload.height;
     }
   },
   actions: {
@@ -170,6 +178,9 @@ export default new Vuex.Store({
     },
     CHANGE_GROUP(state, payload) {
       state.commit("CHANGE_TABLE", payload);
+    },
+    CHANGE_ORIENTATION(state, payload) {
+      state.commit("CHANGE_ORIENTATION", payload);
     }
   },
   getters: {
@@ -203,6 +214,12 @@ export default new Vuex.Store({
     },
     GET_LAYOUT_ID(state) {
       return state.layout.id;
+    },
+    GET_HOSTNAME(state) {
+      return state.hostname;
+    },
+    GET_KONVA_CONFIG(state) {
+      return state.configKonva;
     }
   }
 });

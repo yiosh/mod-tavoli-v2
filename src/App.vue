@@ -1,33 +1,42 @@
 <template>
   <v-app>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Condivision Cloud/</span>
-        <span class="font-weight-light">{{ layout.name }}</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
+    <v-container fluid fill-height>
+      <v-layout fill-height>
+        <v-flex class="text-xs-center" align-self-center>
+          <v-progress-circular
+            v-show="loading == true"
+            align-self-center
+            style="margin: auto"
+            :size="70"
+            :width="7"
+            color="blue"
+            indeterminate
+          ></v-progress-circular>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <template>
+      <v-toolbar v-show="loading == false" app>
+        <v-toolbar-title class="headline text-uppercase">
+          <span>Condivision Cloud Beta</span>
+        </v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar>
 
-    <v-content>
-      <!-- <v-container fluid fill-height grid-list-md> -->
-      <div class="main-container">
-        <v-layout row wrap justify-center align-content-center>
-          <v-flex xs4 align-self-center>
-            <v-progress-linear
-              v-if="loadingVal != 100"
-              background-color="success lighten-3"
-              color="success lighten-1"
-              :value="loadingVal"
-            ></v-progress-linear>
-          </v-flex>
-          <v-flex xs12 align-self-center>
-            <Canvas v-show="loadingVal == 100"></Canvas>
-          </v-flex>
-        </v-layout>
-      </div>
-      <!-- </v-container> -->
-    </v-content>
-    <Sidebar></Sidebar>
+      <v-content v-show="loading == false">
+        <!-- <v-container fluid fill-height grid-list-md> -->
+        <div class="main-container">
+          <v-layout row wrap justify-center align-content-center>
+            <v-flex v-if="loading" class="progress-circle"></v-flex>
+            <v-flex xs12 align-self-center>
+              <Canvas></Canvas>
+            </v-flex>
+          </v-layout>
+        </div>
+        <!-- </v-container> -->
+      </v-content>
+      <Sidebar v-show="loading == false"></Sidebar>
+    </template>
   </v-app>
 </template>
 
@@ -45,8 +54,7 @@ export default {
   },
   data: () => ({
     title: null,
-    loading: true,
-    loadingVal: 0
+    loading: true
   }),
   methods: {
     handleDrawer() {
@@ -55,7 +63,9 @@ export default {
     fetchLayout(layoutId) {
       axios
         .get(
-          `https://demo.condivision.cloud/fl_api/tables-v1/?get_tables_board&token=1&board_id=${layoutId}`
+          `https://${
+            this.$store.state.hostname
+          }/fl_api/tables-v1/?get_tables_board&token=1&board_id=${layoutId}`
         )
         .then(response => {
           // handle success
@@ -69,7 +79,9 @@ export default {
     fetchTableTypes() {
       axios
         .get(
-          "https://demo.condivision.cloud/fl_api/tables-v1/?get_table_types&token=1"
+          `https://${
+            this.$store.state.hostname
+          }/fl_api/tables-v1/?get_table_types&token=1`
         )
         .then(response => {
           let tableTypes = [];
@@ -87,7 +99,9 @@ export default {
     fetchTables(layoutId) {
       axios
         .get(
-          `https://demo.condivision.cloud/fl_api/tables-v1/?get_tables&token=1&board_id=${layoutId}`
+          `https://${
+            this.$store.state.hostname
+          }/fl_api/tables-v1/?get_tables&token=1&board_id=${layoutId}`
         )
         .then(response => {
           this.$store.dispatch("SET_TABLES_FETCHED", response.data.dati);
@@ -101,7 +115,9 @@ export default {
     fetchGuests() {
       axios
         .get(
-          "https://demo.condivision.cloud/fl_api/tables-v1/?get_guests&token=1&table_id=1"
+          `https://${
+            this.$store.state.hostname
+          }/fl_api/tables-v1/?get_guests&token=1&table_id=1`
         )
         .then(response => {
           // handle success
@@ -129,25 +145,29 @@ export default {
       return this.$store.state.layout;
     }
   },
+  mounted() {},
   created() {
     const layoutId = this.getQueryVariable("layout_id");
+    const orientation = this.$store.state.layout.orientation;
+
     if (!layoutId) {
       alert('Please add a "layout_id paramenter!"');
     } else {
+      if (orientation == 1) {
+        this.$store.dispatch("CHANGE_ORIENTATION", {
+          width: 1200,
+          height: 792
+        });
+      }
       this.fetchLayout(layoutId);
       this.fetchTableTypes();
       this.fetchTables(layoutId);
       this.fetchGuests();
-
-      EventBus.$on("loading", percent => {
-        this.loadingVal = percent;
-      });
-
-      if (this.loadingVal == 100) {
-        this.loading = false;
-      }
-      // this.loading = false;
     }
+
+    EventBus.$on("loading-done", () => {
+      this.loading = false;
+    });
   }
 };
 </script>
@@ -156,5 +176,9 @@ export default {
 .main-container {
   display: grid;
   margin: 1em;
+}
+
+.progress-circle {
+  flex: none;
 }
 </style>
