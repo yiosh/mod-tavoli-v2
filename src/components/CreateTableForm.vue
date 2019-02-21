@@ -37,8 +37,7 @@
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                    >{{ tableType.label }}</v-btn
-                  >
+                  >{{ tableType.label }}</v-btn>
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
@@ -54,19 +53,10 @@
               </v-flex>
               <v-flex xs12 sm3 md4 class="py-2">
                 <p>Scala</p>
-                <v-slider
-                  v-model="createTableForm.scale"
-                  step="0.1"
-                  min="1"
-                  max="5"
-                ></v-slider>
+                <v-slider v-model="createTableForm.scale" step="0.1" min="1" max="5"></v-slider>
               </v-flex>
               <v-flex xs12 sm3 md2 class="py-2">
-                <v-text-field
-                  suffix="°"
-                  type="number"
-                  v-model="createTableForm.scale"
-                ></v-text-field>
+                <v-text-field suffix="°" type="number" v-model="createTableForm.scale"></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -78,15 +68,11 @@
                   <v-btn flat :value="Number(45)">45°</v-btn>
                   <v-btn flat :value="Number(90)">90°</v-btn>
                   <v-btn flat :value="Number(180)">180°</v-btn>
-                  <v-btn flat :value="customAngolareVal">Costume</v-btn>
+                  <v-btn flat :value="customAngolareVal">Costum</v-btn>
                 </v-btn-toggle>
               </v-flex>
               <v-flex xs12 sm6 md2 class="py-2">
-                <v-text-field
-                  suffix="°"
-                  type="number"
-                  v-model="createTableForm.angolare"
-                ></v-text-field>
+                <v-text-field suffix="°" type="number" v-model="createTableForm.angolare"></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -101,10 +87,7 @@
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field
-                  v-model="createTableForm.number"
-                  label="Numero"
-                ></v-text-field>
+                <v-text-field v-model="createTableForm.number" label="Numero"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -112,9 +95,7 @@
           <v-container>
             <v-layout justify-end>
               <v-flex xs12>
-                <v-btn :disabled="!valid" type="submit" dark color="green"
-                  >Crea</v-btn
-                >
+                <v-btn :disabled="!valid" type="submit" dark color="green">Crea</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
@@ -373,24 +354,28 @@ export default {
     EventBus.$on("fetch-tables", () => {
       let tablesFetched = this.$store.getters.GET_TABLES_FETCHED;
       let tablesFetchedLength = tablesFetched.length;
-      tablesFetched.forEach((payload, index) => {
-        this.createTable(
-          payload.table_name,
-          Number(payload.table_number),
-          Number(payload.size),
-          // Number(payload.scale_x),
-          // Number(payload.scale_y),
-          this.tableTypeParser(payload.type_id),
-          payload.id,
-          Number(payload.x),
-          Number(payload.y),
-          Number(payload.angolare)
-        );
+      if (tablesFetchedLength > 0) {
+        tablesFetched.forEach((payload, index) => {
+          this.createTable(
+            payload.table_name,
+            Number(payload.table_number),
+            Number(payload.size),
+            // Number(payload.scale_x),
+            // Number(payload.scale_y),
+            this.tableTypeParser(payload.type_id),
+            payload.id,
+            Number(payload.x),
+            Number(payload.y),
+            Number(payload.angolare)
+          );
 
-        if (tablesFetched.length == index + 1) {
-          EventBus.$emit("loading-done");
-        }
-      });
+          if (tablesFetched.length == index + 1) {
+            EventBus.$emit("loading-done");
+          }
+        });
+      } else {
+        EventBus.$emit("loading-done");
+      }
     });
 
     EventBus.$on("create-table-select", () => {

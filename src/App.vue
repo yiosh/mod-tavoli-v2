@@ -1,4 +1,11 @@
 <template>
+  <!-- <div id="app">
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view/>
+  </div>-->
   <v-app>
     <v-container fluid fill-height>
       <v-layout fill-height>
@@ -15,47 +22,48 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <template>
-      <v-toolbar v-show="loading == false" app>
-        <v-toolbar-title class="headline text-uppercase">
-          <span>Condivision Cloud Beta</span>
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
 
-      <v-content v-show="loading == false">
-        <!-- <v-container fluid fill-height grid-list-md> -->
-        <div class="main-container">
-          <v-layout row wrap justify-center align-content-center>
-            <v-flex v-if="loading" class="progress-circle"></v-flex>
-            <v-flex xs12 align-self-center>
-              <Canvas></Canvas>
-            </v-flex>
-          </v-layout>
-        </div>
-        <!-- </v-container> -->
-      </v-content>
-      <Sidebar v-show="loading == false"></Sidebar>
-    </template>
+    <v-toolbar v-show="loading == false" app>
+      <v-toolbar-title class="headline text-uppercase">
+        <span>Condivision Cloud Beta</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
+
+    <v-content v-show="loading == false">
+      <div class="main-container">
+        <v-layout row wrap justify-center align-content-center>
+          <v-flex xs12 align-self-center>
+            <router-view/>
+          </v-flex>
+        </v-layout>
+      </div>
+    </v-content>
+    <Sidebar v-show="loading == false"></Sidebar>
   </v-app>
 </template>
 
 <script>
-import Canvas from "./components/Canvas";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "@/components/Sidebar";
 import { EventBus } from "./event-bus.js";
 import axios from "axios";
-
 export default {
-  name: "App",
+  name: "Home",
   components: {
-    Canvas,
     Sidebar
   },
   data: () => ({
     title: null,
     loading: true
   }),
+  computed: {
+    layout() {
+      return this.$store.state.layout;
+    },
+    layoutName() {
+      return this.$store.state.layout.name;
+    }
+  },
   methods: {
     handleDrawer() {
       EventBus.$emit("handle-drawer");
@@ -140,16 +148,15 @@ export default {
       return false;
     }
   },
-  computed: {
-    layout() {
-      return this.$store.state.layout;
-    }
+  mounted() {
+    console.log("layout name", this.layoutName);
+    document.title = this.layoutName
+      ? this.layoutName + " - Table Manager V2"
+      : "Table Manager V2";
   },
-  mounted() {},
   created() {
     const layoutId = this.getQueryVariable("layout_id");
     const orientation = this.$store.state.layout.orientation;
-
     if (!layoutId) {
       alert('Please add a "layout_id paramenter!"');
     } else {
@@ -164,7 +171,6 @@ export default {
       this.fetchTables(layoutId);
       this.fetchGuests();
     }
-
     EventBus.$on("loading-done", () => {
       this.loading = false;
     });
@@ -177,7 +183,6 @@ export default {
   display: grid;
   margin: 1em;
 }
-
 .progress-circle {
   flex: none;
 }

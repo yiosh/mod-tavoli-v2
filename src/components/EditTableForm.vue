@@ -22,8 +22,7 @@
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                    >{{ tableType.label }}</v-btn
-                  >
+                  >{{ tableType.label }}</v-btn>
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
@@ -39,19 +38,10 @@
               </v-flex>
               <v-flex xs12 sm3 md4 class="py-2">
                 <p>Scala</p>
-                <v-slider
-                  v-model="editedItem.scale"
-                  step="0.1"
-                  min="1"
-                  max="5"
-                ></v-slider>
+                <v-slider v-model="editedItem.scale" step="0.1" min="1" max="5"></v-slider>
               </v-flex>
               <v-flex xs12 sm3 md2 class="py-2">
-                <v-text-field
-                  suffix="°"
-                  type="number"
-                  v-model="editedItem.scale"
-                ></v-text-field>
+                <v-text-field suffix="°" type="number" v-model="editedItem.scale"></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -63,7 +53,7 @@
                   <v-btn flat :value="Number(45)">45°</v-btn>
                   <v-btn flat :value="Number(90)">90°</v-btn>
                   <v-btn flat :value="Number(180)">180°</v-btn>
-                  <v-btn flat :value="customAngolareVal">Costume</v-btn>
+                  <v-btn flat :value="customAngolareVal">Costum</v-btn>
                 </v-btn-toggle>
               </v-flex>
               <!-- <v-flex xs12 sm6 md4 class="py-2">
@@ -75,29 +65,17 @@
                 ></v-slider>
               </v-flex>-->
               <v-flex xs12 sm6 md2 class="py-2" mandatory>
-                <v-text-field
-                  suffix="°"
-                  type="number"
-                  v-model="editedItem.angolare"
-                ></v-text-field>
+                <v-text-field suffix="°" type="number" v-model="editedItem.angolare"></v-text-field>
               </v-flex>
             </v-layout>
 
             <v-layout>
               <v-flex xs12 md6>
-                <v-text-field
-                  :rules="nameRules"
-                  v-model="editedItem.text"
-                  label="Nome"
-                  required
-                ></v-text-field>
+                <v-text-field :rules="nameRules" v-model="editedItem.text" label="Nome" required></v-text-field>
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field
-                  v-model="editedItem.number"
-                  label="Numero"
-                ></v-text-field>
+                <v-text-field v-model="editedItem.number" label="Numero"></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -106,9 +84,7 @@
             <v-layout justify-end>
               <v-flex xs12>
                 <v-btn @click="remove" dark color="error">Elimina</v-btn>
-                <v-btn :disabled="!valid" type="submit" dark color="green"
-                  >Salva</v-btn
-                >
+                <v-btn :disabled="!valid" type="submit" dark color="green">Salva</v-btn>
               </v-flex>
             </v-layout>
           </v-container>

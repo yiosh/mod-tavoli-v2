@@ -12,9 +12,7 @@
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn color="blue darken-1" flat @click="dialog = false"
-            >Chiudi</v-btn
-          >
+          <v-btn color="blue darken-1" flat @click="dialog = false">Chiudi</v-btn>
           <v-btn dark color="blue darken-1" @click="PrintImage(src)">
             <i class="fas fa-print icon-margin"></i>Stampare
           </v-btn>
