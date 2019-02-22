@@ -70,7 +70,6 @@ export default {
         )
         .then(response => {
           // handle success
-          console.log("layout resp", response.data.dati[0]);
           this.$store.dispatch("SET_LAYOUT", response.data.dati[0]);
         })
         .catch(error => {
@@ -90,7 +89,6 @@ export default {
           for (let index = 1; index < response.data.dati.length; index++) {
             tableTypes.push(response.data.dati[index]);
           }
-          console.log("table types", tableTypes);
           this.$store.dispatch("SET_TABLE_TYPES_FETCHED", tableTypes);
         })
         .catch(error => {

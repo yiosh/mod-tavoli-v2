@@ -50,14 +50,14 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <GuestList></GuestList>
+    <GuestList v-if="this.$store.state.layout.evento_id != 0"></GuestList>
     <PrintCanvas></PrintCanvas>
     <!-- <TableSelector></TableSelector> -->
   </v-layout>
 </template>
 
 <script>
-import TableSelector from "./TableSelector";
+// import TableSelector from "./TableSelector";
 import GuestList from "./GuestList";
 import PrintCanvas from "./PrintCanvas";
 import { EventBus } from "../event-bus.js";
@@ -65,17 +65,14 @@ import { EventBus } from "../event-bus.js";
 export default {
   name: "Sidebar",
   components: {
-    TableSelector,
+    // TableSelector,
     GuestList,
     PrintCanvas
   },
   data: () => ({
     drawer: true,
-    items: [
-      // { title: "Create Table", icon: "add_box" },
-      { title: "Elenco degli Ospiti", icon: "people" },
-      { title: "Anteprima", icon: "print" }
-    ],
+    templateLayout: false,
+    items: [],
     mini: true,
     right: null
   }),
@@ -90,6 +87,16 @@ export default {
           EventBus.$emit("preview-select");
           break;
       }
+    }
+  },
+  mounted() {
+    if (this.$store.state.layout.evento_id == 0) {
+      this.items = [{ title: "Anteprima", icon: "print" }];
+    } else {
+      this.items = [
+        { title: "Elenco degli Ospiti", icon: "people" },
+        { title: "Anteprima", icon: "print" }
+      ];
     }
   },
   created() {
