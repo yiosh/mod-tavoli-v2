@@ -182,8 +182,24 @@ export default {
 
     deleteItem(item) {
       const index = this.guests.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
-        this.guests.splice(index, 1);
+
+      confirm(
+        `Sei sicuro di voler eliminare a ${item.nome} ${item.cognome}?`
+      ) &&
+        // Create a New Guest
+        axios
+          .get(
+            `https://${
+              this.$store.state.hostname
+            }/fl_api/tables-v1/?delete_guest&token=1&guest_id=${item.id}`
+          )
+          .then(response => {
+            console.log("Response", response);
+            this.guests.splice(index, 1);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
     },
 
     close() {
@@ -219,12 +235,14 @@ export default {
             });
             Object.assign(this.guests[index], itemToEdit);
           })
-          .catch(function(error) {
+          .catch(error => {
             console.log(error);
           });
         console.log("editeditem after", this.editedItem);
       } else {
         // Create a New Guest
+        let $this = this;
+        let itemToEdit = this.editedItem;
         axios
           .get(
             `https://${
@@ -237,14 +255,13 @@ export default {
               this.editedItem.baby
             }&chairs_only=${this.editedItem.chairs_only}&highchair=${
               this.editedItem.high_chair
-            }&note_intolleranze=${this.editedItem.note_intolleranze};`
+            }&note_intolleranze=${this.editedItem.note_intolleranze}`
           )
           .then(response => {
-            console.log("Response", response);
-            this.editedItem.id = response.id;
-            this.guests.push(this.editedItem);
+            itemToEdit.id = response.data.id;
+            $this.guests.push(itemToEdit);
           })
-          .catch(function(error) {
+          .catch(error => {
             console.log(error);
           });
       }
