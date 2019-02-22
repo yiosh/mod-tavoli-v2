@@ -46,7 +46,7 @@ export default {
   }),
   computed: {
     layoutName() {
-      return this.$store.state.layout.name;
+      return this.$store.state.layout.layout_name;
     }
   },
   methods: {

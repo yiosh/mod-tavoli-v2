@@ -12,14 +12,14 @@ export default new Vuex.Store({
         : window.location.hostname,
     selectedGroup: null,
     layout: {
-      id: null,
-      name: null,
-      orientation: null,
-      sedeId: null,
-      ambienteId: null,
-      eventoId: null,
-      updatedAt: null,
-      createdAt: null
+      ambiente_id: "",
+      created_at: "",
+      evento_id: "",
+      id: "",
+      layout_name: "",
+      orientation: "",
+      sede_id: "",
+      updated_at: ""
     },
     tablesFetched: [],
     tableTypes: [],
@@ -54,14 +54,8 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_LAYOUT(state, payload) {
-      state.layout.id = payload.id;
-      state.layout.name = payload.layout_name;
-      state.layout.orientation = payload.orientation;
-      state.layout.sedeId = payload.sede_id;
-      state.layout.ambienteId = payload.ambiente_id;
-      state.layout.eventoId = payload.evento_id;
-      state.layout.updatedAt = payload.updated_at;
-      state.layout.createdAt = payload.created_at;
+      state.layout = Object.assign({}, payload);
+      console.log("Layout", state.layout);
     },
     SET_STAGE(state, payload) {
       state.stage = payload;
@@ -80,6 +74,7 @@ export default new Vuex.Store({
     },
     ADD_NEW_TABLE(state, payload) {
       state.groups.push(payload);
+      console.log("ADD_NEW_TABLE", payload);
     },
     REMOVE_TABLE(state, payload) {
       let indexToRemove = _.findIndex(state.groups, group => {
@@ -122,6 +117,8 @@ export default new Vuex.Store({
       console.log("tableToEdit", tableToEdit);
       console.log("tableConfig", state.groups[indexToEdit].table.tableConfig);
 
+      tableToEdit.tableConfig.scaleX = payload.scaleX;
+      tableToEdit.tableConfig.scaleY = payload.scaleY;
       tableToEdit.type = payload.type;
       tableToEdit.tableConfig.rotation = Number(payload.angolare);
       tableToEdit.textConfig.name = payload.text;

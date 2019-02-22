@@ -1,11 +1,4 @@
 <template>
-  <!-- <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>-->
   <v-app>
     <v-container fluid fill-height>
       <v-layout fill-height>
@@ -34,7 +27,7 @@
       <div class="main-container">
         <v-layout row wrap justify-center align-content-center>
           <v-flex xs12 align-self-center>
-            <router-view/>
+            <router-view />
           </v-flex>
         </v-layout>
       </div>
@@ -61,7 +54,7 @@ export default {
       return this.$store.state.layout;
     },
     layoutName() {
-      return this.$store.state.layout.name;
+      return this.$store.state.layout.layout_name;
     }
   },
   methods: {
@@ -77,6 +70,7 @@ export default {
         )
         .then(response => {
           // handle success
+          console.log("layout resp", response.data.dati[0]);
           this.$store.dispatch("SET_LAYOUT", response.data.dati[0]);
         })
         .catch(error => {
@@ -149,9 +143,8 @@ export default {
     }
   },
   mounted() {
-    console.log("layout name", this.layoutName);
-    document.title = this.layoutName
-      ? this.layoutName + " - Table Manager V2"
+    document.title = this.$store.state.layout.layout_name
+      ? this.$store.state.layout.layout_name + " - Table Manager V2"
       : "Table Manager V2";
   },
   created() {

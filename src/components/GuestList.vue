@@ -14,12 +14,12 @@
           <v-toolbar flat color="white">
             <v-spacer></v-spacer>
             <v-dialog v-model="guestDialog" max-width="500px">
-              <v-btn slot="activator" color="primary" dark class="mb-2">
-                {{ formTitle }}
-              </v-btn>
+              <v-btn slot="activator" color="primary" dark class="mb-2"
+                >Crea Nuovo Ospite</v-btn
+              >
               <v-card>
                 <v-card-title>
-                  <span class="headline">Aggiungi Nuovo Ospite</span>
+                  <span class="headline">{{ formTitle }}</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -129,6 +129,7 @@ export default {
   name: "GuestList",
   data() {
     return {
+      tableId: null,
       snackbar: false,
       dialog: false,
       guestDialog: false,
@@ -146,6 +147,7 @@ export default {
       guests: [],
       editedIndex: -1,
       editedItem: {
+        id: null,
         nome: "",
         cognome: "",
         peoples: 0,
@@ -155,6 +157,7 @@ export default {
         note_intolleranze: ""
       },
       defaultItem: {
+        id: null,
         nome: "",
         cognome: "",
         peoples: 0,
@@ -167,9 +170,7 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedIndex === -1
-        ? "Aggiungi Nuovo Ospite"
-        : "Modifica Ospite";
+      return this.editedIndex === -1 ? "Crea Nuovo Ospite" : "Modifica Ospite";
     }
   },
   methods: {
@@ -195,9 +196,57 @@ export default {
 
     save() {
       if (this.editedIndex > -1) {
-        Object.assign(this.guests[this.editedIndex], this.editedItem);
+        // Update existing guest
+        let itemToEdit = this.editedItem;
+        axios
+          .get(
+            `https://${
+              this.$store.state.hostname
+            }/fl_api/tables-v1/?update_guest&token=1&guest_id=${
+              this.editedItem.id
+            }&cognome=${this.editedItem.cognome}&peoples=${
+              this.editedItem.peoples
+            }&nome=${this.editedItem.nome}&baby=${
+              this.editedItem.baby
+            }&chairs_only=${this.editedItem.chairs_only}&highchair=${
+              this.editedItem.high_chair
+            }&note_intolleranze=${this.editedItem.note_intolleranze}`
+          )
+          .then(response => {
+            console.log("AJAX Response: ", response.data);
+            let index = _.findIndex(this.guests, guest => {
+              return guest.id == itemToEdit.id;
+            });
+            Object.assign(this.guests[index], itemToEdit);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+        console.log("editeditem after", this.editedItem);
       } else {
-        this.guests.push(this.editedItem);
+        // Create a New Guest
+        axios
+          .get(
+            `https://${
+              this.$store.state.hostname
+            }/fl_api/tables-v1/?insert_guest&token=1&table_id=${
+              this.tableId
+            }&cognome=${this.editedItem.cognome}&peoples=${
+              this.editedItem.peoples
+            }&nome=${this.editedItem.nome}&baby=${
+              this.editedItem.baby
+            }&chairs_only=${this.editedItem.chairs_only}&highchair=${
+              this.editedItem.high_chair
+            }&note_intolleranze=${this.editedItem.note_intolleranze};`
+          )
+          .then(response => {
+            console.log("Response", response);
+            this.editedItem.id = response.id;
+            this.guests.push(this.editedItem);
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
       }
       this.close();
     }
@@ -206,6 +255,7 @@ export default {
     EventBus.$on("table-select", group => {
       let guests = this.$store.state.guests;
       let id = group.attrs.table.id;
+      this.tableId = id;
 
       this.guests = _.filter(guests, element => {
         return element.table_id == id;

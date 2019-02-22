@@ -17,6 +17,8 @@
               createTableForm.text,
               createTableForm.number,
               Number(createTableForm.size),
+              1,
+              1,
               createTableForm.type,
               groupsLength,
               100,
@@ -37,7 +39,8 @@
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                  >{{ tableType.label }}</v-btn>
+                    >{{ tableType.label }}</v-btn
+                  >
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
@@ -51,12 +54,40 @@
                   <v-btn flat :value="Number(90)">Grande</v-btn>
                 </v-btn-toggle>
               </v-flex>
+            </v-layout>
+
+            <v-layout>
               <v-flex xs12 sm3 md4 class="py-2">
-                <p>Scala</p>
-                <v-slider v-model="createTableForm.scale" step="0.1" min="1" max="5"></v-slider>
+                <p>Scala X</p>
+                <v-slider
+                  v-model="createTableForm.scaleX"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                ></v-slider>
               </v-flex>
               <v-flex xs12 sm3 md2 class="py-2">
-                <v-text-field suffix="°" type="number" v-model="createTableForm.scale"></v-text-field>
+                <v-text-field
+                  suffix="°"
+                  type="number"
+                  v-model="createTableForm.scaleX"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm3 md4 class="py-2">
+                <p>Scala Y</p>
+                <v-slider
+                  v-model="createTableForm.scaleY"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                ></v-slider>
+              </v-flex>
+              <v-flex xs12 sm3 md2 class="py-2">
+                <v-text-field
+                  suffix="°"
+                  type="number"
+                  v-model="createTableForm.scaleY"
+                ></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -72,7 +103,11 @@
                 </v-btn-toggle>
               </v-flex>
               <v-flex xs12 sm6 md2 class="py-2">
-                <v-text-field suffix="°" type="number" v-model="createTableForm.angolare"></v-text-field>
+                <v-text-field
+                  suffix="°"
+                  type="number"
+                  v-model="createTableForm.angolare"
+                ></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -87,7 +122,10 @@
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field v-model="createTableForm.number" label="Numero"></v-text-field>
+                <v-text-field
+                  v-model="createTableForm.number"
+                  label="Numero"
+                ></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -95,7 +133,9 @@
           <v-container>
             <v-layout justify-end>
               <v-flex xs12>
-                <v-btn :disabled="!valid" type="submit" dark color="green">Crea</v-btn>
+                <v-btn :disabled="!valid" type="submit" dark color="green"
+                  >Crea</v-btn
+                >
               </v-flex>
             </v-layout>
           </v-container>
@@ -118,7 +158,8 @@ export default {
     createTableForm: {
       type: "circle",
       size: 30,
-      scale: 1,
+      scaleX: 1,
+      scaleY: 1,
       angolare: 0,
       text: "",
       number: 0
@@ -190,8 +231,8 @@ export default {
       name,
       number = "",
       size,
-      // scaleX,
-      // scaleY,
+      scaleX = 1,
+      scaleY = 1,
       type,
       id,
       x = 100,
@@ -199,7 +240,6 @@ export default {
       angolare = 0,
       n = false
     ) {
-      // angolare = (angolare + 180) % 360;
       let uID =
         "_" +
         Math.random()
@@ -231,8 +271,8 @@ export default {
             tableConfig: {
               name: tableName,
               radius: size,
-              // scaleX,
-              // scaleY,
+              scaleX,
+              scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -249,8 +289,8 @@ export default {
               name: tableName,
               width: size,
               height: size,
-              // scaleX,
-              // scaleY,
+              scaleX,
+              scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -267,8 +307,8 @@ export default {
               name: tableName,
               width: size * 2,
               height: size,
-              // scaleX,
-              // scaleY,
+              scaleX,
+              scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -285,8 +325,8 @@ export default {
               name: tableName,
               radiusX: size,
               radiusY: size * 2,
-              // scaleX: n ? scaleX * 2 : scaleX,
-              // scaleY,
+              scaleX,
+              scaleY,
               rotation: angolare,
               fill: "white",
               stroke: "black",
@@ -331,14 +371,13 @@ export default {
               details.table_name
             }&table_number=${details.table_number}&table_group=${
               details.table_group
-            }&size=${size}&scale_x=${1.5}&x=${details.x}&y=${
-              details.y
-            }&angolare=${details.angolare}`
+            }&size=${size}&x=${details.x}&y=${details.y}&angolare=${
+              details.angolare
+            }`
           )
           .then(function(response) {
             console.log("Response", response);
             group.table.id = response.data.id;
-            console.log("New group", group);
           })
           .catch(function(error) {
             console.log(error);
@@ -360,8 +399,8 @@ export default {
             payload.table_name,
             Number(payload.table_number),
             Number(payload.size),
-            // Number(payload.scale_x),
-            // Number(payload.scale_y),
+            Number(payload.scale_x),
+            Number(payload.scale_y),
             this.tableTypeParser(payload.type_id),
             payload.id,
             Number(payload.x),

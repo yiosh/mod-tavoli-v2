@@ -22,13 +22,14 @@
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
-                  >{{ tableType.label }}</v-btn>
+                    >{{ tableType.label }}</v-btn
+                  >
                 </v-btn-toggle>
               </v-flex>
             </v-layout>
 
             <v-layout>
-              <v-flex xs12 sm6 md6 class="py-2">
+              <v-flex xs12 sm6 md5 class="py-2">
                 <p>Dimensione</p>
                 <v-btn-toggle v-model="editedItem.size" mandatory>
                   <v-btn flat :value="Number(30)">Piccolo</v-btn>
@@ -36,12 +37,36 @@
                   <v-btn flat :value="Number(90)">Grande</v-btn>
                 </v-btn-toggle>
               </v-flex>
+            </v-layout>
+
+            <v-layout>
               <v-flex xs12 sm3 md4 class="py-2">
-                <p>Scala</p>
-                <v-slider v-model="editedItem.scale" step="0.1" min="1" max="5"></v-slider>
+                <p>Scala X</p>
+                <v-slider
+                  v-model="editedItem.scaleX"
+                  step="0.1"
+                  max="5"
+                ></v-slider>
               </v-flex>
               <v-flex xs12 sm3 md2 class="py-2">
-                <v-text-field suffix="°" type="number" v-model="editedItem.scale"></v-text-field>
+                <v-text-field
+                  suffix="°"
+                  v-model="editedItem.scaleX"
+                ></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm3 md4 class="py-2">
+                <p>Scala Y</p>
+                <v-slider
+                  v-model="editedItem.scaleY"
+                  step="0.1"
+                  max="5"
+                ></v-slider>
+              </v-flex>
+              <v-flex xs12 sm3 md2 class="py-2">
+                <v-text-field
+                  suffix="°"
+                  v-model="editedItem.scaleY"
+                ></v-text-field>
               </v-flex>
             </v-layout>
 
@@ -65,17 +90,29 @@
                 ></v-slider>
               </v-flex>-->
               <v-flex xs12 sm6 md2 class="py-2" mandatory>
-                <v-text-field suffix="°" type="number" v-model="editedItem.angolare"></v-text-field>
+                <v-text-field
+                  suffix="°"
+                  type="number"
+                  v-model="editedItem.angolare"
+                ></v-text-field>
               </v-flex>
             </v-layout>
 
             <v-layout>
               <v-flex xs12 md6>
-                <v-text-field :rules="nameRules" v-model="editedItem.text" label="Nome" required></v-text-field>
+                <v-text-field
+                  :rules="nameRules"
+                  v-model="editedItem.text"
+                  label="Nome"
+                  required
+                ></v-text-field>
               </v-flex>
 
               <v-flex xs12 md6>
-                <v-text-field v-model="editedItem.number" label="Numero"></v-text-field>
+                <v-text-field
+                  v-model="editedItem.number"
+                  label="Numero"
+                ></v-text-field>
               </v-flex>
             </v-layout>
           </v-container>
@@ -84,7 +121,9 @@
             <v-layout justify-end>
               <v-flex xs12>
                 <v-btn @click="remove" dark color="error">Elimina</v-btn>
-                <v-btn :disabled="!valid" type="submit" dark color="green">Salva</v-btn>
+                <v-btn :disabled="!valid" type="submit" dark color="green"
+                  >Salva</v-btn
+                >
               </v-flex>
             </v-layout>
           </v-container>
@@ -109,7 +148,8 @@ export default {
       id: "",
       type: "circle",
       size: 30,
-      scale: 1,
+      scaleX: "1",
+      scaleY: "1",
       angolare: 0,
       text: "",
       number: ""
@@ -118,7 +158,8 @@ export default {
       id: "",
       type: "circle",
       size: 30,
-      scale: 1,
+      scaleX: "1",
+      scaleY: "1",
       angolare: 0,
       text: "",
       number: ""
@@ -214,7 +255,8 @@ export default {
         id: table.id,
         type: table.type,
         size: Number(size),
-        scale: 1,
+        scaleX: parseFloat(table.tableConfig.scaleX),
+        scaleY: parseFloat(table.tableConfig.scaleY),
         angolare: Number(table.tableConfig.rotation),
         text: table.textConfig.name,
         number: table.textConfig.number
@@ -238,7 +280,8 @@ export default {
         id: this.editedItem.id,
         type: this.editedItem.type,
         size: this.editedItem.size,
-        scale: this.editedItem.size,
+        scaleX: this.editedItem.scaleX,
+        scaleY: this.editedItem.scaleY,
         angolare,
         text: this.editedItem.text,
         number: this.editedItem.number
@@ -261,7 +304,9 @@ export default {
               this.editedItem.type
             )}&table_name=${this.editedItem.text}&table_number=${
               this.editedItem.number
-            }&size=${this.editedItem.size}&angolare=${newItem.angolare}`
+            }&size=${this.editedItem.size}&scale_x=${
+              this.editedItem.scaleX
+            }&scale_y=${this.editedItem.scaleY}&angolare=${newItem.angolare}`
           )
           .then(function(response) {
             console.log("Response", response);
