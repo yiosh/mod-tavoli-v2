@@ -157,7 +157,8 @@ export default {
           height: 792
         });
       }
-      this.fetchLayout(layoutId);
+      this.$store.dispatch("FETCH_LAYOUT", layoutId)
+      // this.fetchLayout(layoutId);
       this.fetchTableTypes();
       this.fetchTables(layoutId);
       this.fetchGuests();

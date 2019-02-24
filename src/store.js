@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import _ from "lodash";
+import TMService from "@/services/TMService";
 
 Vue.use(Vuex);
 
@@ -178,6 +179,17 @@ export default new Vuex.Store({
     },
     CHANGE_ORIENTATION(state, payload) {
       state.commit("CHANGE_ORIENTATION", payload);
+    },
+    FETCH_LAYOUT(state, layoutId) {
+      TMService.fetchLayout(layoutId)
+        .then(response => {
+          // handle success
+          state.commit("SET_LAYOUT", response.data.dati[0]);
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });
     }
   },
   getters: {
