@@ -61,57 +61,6 @@ export default {
     handleDrawer() {
       EventBus.$emit("handle-drawer");
     },
-    fetchLayout(layoutId) {
-      axios
-        .get(
-          `https://${
-            this.$store.state.hostname
-          }/fl_api/tables-v1/?get_tables_board&token=1&board_id=${layoutId}`
-        )
-        .then(response => {
-          // handle success
-          this.$store.dispatch("SET_LAYOUT", response.data.dati[0]);
-        })
-        .catch(error => {
-          // handle error
-          console.log(error);
-        });
-    },
-    fetchTableTypes() {
-      axios
-        .get(
-          `https://${
-            this.$store.state.hostname
-          }/fl_api/tables-v1/?get_table_types&token=1`
-        )
-        .then(response => {
-          let tableTypes = [];
-          for (let index = 1; index < response.data.dati.length; index++) {
-            tableTypes.push(response.data.dati[index]);
-          }
-          this.$store.dispatch("SET_TABLE_TYPES_FETCHED", tableTypes);
-        })
-        .catch(error => {
-          // handle error
-          console.log(error);
-        });
-    },
-    fetchTables(layoutId) {
-      axios
-        .get(
-          `https://${
-            this.$store.state.hostname
-          }/fl_api/tables-v1/?get_tables&token=1&board_id=${layoutId}`
-        )
-        .then(response => {
-          this.$store.dispatch("SET_TABLES_FETCHED", response.data.dati);
-          EventBus.$emit("fetch-tables");
-        })
-        .catch(error => {
-          // handle error
-          console.log(error);
-        });
-    },
     fetchGuests() {
       axios
         .get(
@@ -157,10 +106,9 @@ export default {
           height: 792
         });
       }
-      this.$store.dispatch("FETCH_LAYOUT", layoutId)
-      // this.fetchLayout(layoutId);
-      this.fetchTableTypes();
-      this.fetchTables(layoutId);
+      this.$store.dispatch("FETCH_LAYOUT", layoutId);
+      this.$store.dispatch("SET_TABLE_TYPES_FETCHED");
+      this.$store.dispatch("SET_TABLES_FETCHED", layoutId);
       this.fetchGuests();
     }
     EventBus.$on("loading-done", () => {

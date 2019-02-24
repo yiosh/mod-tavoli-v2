@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import _ from "lodash";
 import TMService from "@/services/TMService";
+import { EventBus } from "./event-bus.js";
 
 Vue.use(Vuex);
 
@@ -69,6 +70,7 @@ export default new Vuex.Store({
     },
     SET_TABLES_FETCHED(state, payload) {
       state.tablesFetched = payload;
+      EventBus.$emit("fetch-tables");
     },
     SET_TABLE_TYPES_FETCHED(state, payload) {
       state.tableTypes = payload;
@@ -141,20 +143,39 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    SET_LAYOUT(state, payload) {
-      state.commit("SET_LAYOUT", payload);
-    },
     SET_STAGE(state, payload) {
       state.commit("SET_STAGE", payload);
     },
     SET_LAYER(state, payload) {
       state.commit("SET_LAYER", payload);
     },
-    SET_TABLES_FETCHED(state, payload) {
-      state.commit("SET_TABLES_FETCHED", payload);
+    SET_TABLES_FETCHED({ commit }, layoutId) {
+      TMService.getTables(layoutId)
+        .then(response => {
+          // handle success
+          console.log("tables", response);
+          commit("SET_TABLES_FETCHED", response.data.dati);
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });
+      // state.commit("SET_TABLES_FETCHED", payload);
     },
-    SET_TABLE_TYPES_FETCHED(state, payload) {
-      state.commit("SET_TABLE_TYPES_FETCHED", payload);
+    SET_TABLE_TYPES_FETCHED({ commit }) {
+      TMService.fetchTableTypes()
+        .then(response => {
+          // handle success
+          let tableTypes = [];
+          for (let index = 1; index < response.data.dati.length; index++) {
+            tableTypes.push(response.data.dati[index]);
+          }
+          commit("SET_TABLE_TYPES_FETCHED", tableTypes);
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });
     },
     SET_GUESTS(state, payload) {
       state.commit("SET_GUESTS", payload);
@@ -180,11 +201,11 @@ export default new Vuex.Store({
     CHANGE_ORIENTATION(state, payload) {
       state.commit("CHANGE_ORIENTATION", payload);
     },
-    FETCH_LAYOUT(state, layoutId) {
+    FETCH_LAYOUT({ commit }, layoutId) {
       TMService.fetchLayout(layoutId)
         .then(response => {
           // handle success
-          state.commit("SET_LAYOUT", response.data.dati[0]);
+          commit("SET_LAYOUT", response.data.dati[0]);
         })
         .catch(error => {
           // handle error
