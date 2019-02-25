@@ -268,15 +268,17 @@ export default {
       this.close();
     }
   },
+
   created() {
     EventBus.$on("table-select", group => {
-      let guests = this.$store.state.guests;
       let id = group.attrs.table.id;
-      this.tableId = id;
+      if (this.guests.length == 0) {
+        this.$store.dispatch("FETCH_GUESTS", id);
+      }
+    });
 
-      this.guests = _.filter(guests, element => {
-        return element.table_id == id;
-      });
+    EventBus.$on("guests-fetched", () => {
+      this.guests = this.$store.state.guests;
     });
 
     EventBus.$on("guest-list-select", () => {

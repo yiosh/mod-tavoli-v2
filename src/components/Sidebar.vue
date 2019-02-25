@@ -90,7 +90,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.layout.evento_id == 0) {
+    if (this.$store.state.layout.evento_id == "0") {
       this.items = [{ title: "Anteprima", icon: "print" }];
     } else {
       this.items = [

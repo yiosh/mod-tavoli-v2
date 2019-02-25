@@ -61,22 +61,6 @@ export default {
     handleDrawer() {
       EventBus.$emit("handle-drawer");
     },
-    fetchGuests() {
-      axios
-        .get(
-          `https://${
-            this.$store.state.hostname
-          }/fl_api/tables-v1/?get_guests&token=1&table_id=1`
-        )
-        .then(response => {
-          // handle success
-          this.$store.dispatch("SET_GUESTS", response.data.dati);
-        })
-        .catch(error => {
-          // handle error
-          console.log(error);
-        });
-    },
     getQueryVariable(variable) {
       let query = window.location.search.substring(1);
       let vars = query.split("&");
@@ -109,7 +93,6 @@ export default {
       this.$store.dispatch("FETCH_LAYOUT", layoutId);
       this.$store.dispatch("SET_TABLE_TYPES_FETCHED");
       this.$store.dispatch("SET_TABLES_FETCHED", layoutId);
-      this.fetchGuests();
     }
     EventBus.$on("loading-done", () => {
       this.loading = false;

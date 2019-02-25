@@ -65,8 +65,14 @@ export default new Vuex.Store({
     SET_LAYER(state, payload) {
       state.layer = payload;
     },
-    SET_GUESTS(state, payload) {
-      state.guests = payload;
+    FETCH_GUESTS(state, payload) {
+      if (payload.length > 0) {
+        payload.forEach(guest => {
+          state.guests.push(guest);
+        });
+      }
+      EventBus.$emit("guests-fetched");
+      // state.guests = payload;
     },
     SET_TABLES_FETCHED(state, payload) {
       state.tablesFetched = payload;
@@ -206,6 +212,19 @@ export default new Vuex.Store({
         .then(response => {
           // handle success
           commit("SET_LAYOUT", response.data.dati[0]);
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });
+    },
+    FETCH_GUESTS({ commit }, tableId) {
+      TMService.fetchGuests(tableId)
+        .then(response => {
+          // handle success
+          console.log("guests", response.data.dati);
+
+          commit("FETCH_GUESTS", response.data.dati);
         })
         .catch(error => {
           // handle error

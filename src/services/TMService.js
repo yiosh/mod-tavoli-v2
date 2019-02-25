@@ -21,11 +21,16 @@ export default {
     );
   },
   fetchTableTypes() {
-    return apiClient.get("/fl_api/tables-v1/?get_table_types&token=1=");
+    return apiClient.get("/fl_api/tables-v1/?get_table_types&token=1");
   },
   getTables(layoutId) {
     return apiClient.get(
       "/fl_api/tables-v1/?get_tables&token=1&board_id=" + layoutId
+    );
+  },
+  fetchGuests(tableId) {
+    return apiClient.get(
+      "/fl_api/tables-v1/?get_guests&token=1&table_id=" + tableId
     );
   }
 };
