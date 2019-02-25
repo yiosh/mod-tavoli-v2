@@ -39,7 +39,7 @@
 <script>
 import Sidebar from "@/components/Sidebar";
 import { EventBus } from "./event-bus.js";
-import axios from "axios";
+
 export default {
   name: "Home",
   components: {

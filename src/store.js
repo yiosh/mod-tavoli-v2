@@ -72,7 +72,6 @@ export default new Vuex.Store({
         });
       }
       EventBus.$emit("guests-fetched");
-      // state.guests = payload;
     },
     SET_TABLES_FETCHED(state, payload) {
       state.tablesFetched = payload;
@@ -83,7 +82,6 @@ export default new Vuex.Store({
     },
     ADD_NEW_TABLE(state, payload) {
       state.groups.push(payload);
-      console.log("ADD_NEW_TABLE", payload);
     },
     REMOVE_TABLE(state, payload) {
       let indexToRemove = _.findIndex(state.groups, group => {
@@ -255,9 +253,6 @@ export default new Vuex.Store({
     GET_CREATE_TABLE_FORM(state) {
       return state.createTableForm;
     },
-    GET_DIALOG(state) {
-      return state.dialog;
-    },
     GET_SELECTED_GROUP(state) {
       return state.selectedGroup;
     },
@@ -266,9 +261,6 @@ export default new Vuex.Store({
     },
     GET_HOSTNAME(state) {
       return state.hostname;
-    },
-    GET_KONVA_CONFIG(state) {
-      return state.configKonva;
     }
   }
 });
