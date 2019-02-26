@@ -157,7 +157,7 @@ export default new Vuex.Store({
       TMService.getTables(layoutId)
         .then(response => {
           // handle success
-          console.log("tables", response);
+          console.log("Tables Fetched:", response.data.dati);
           commit("SET_TABLES_FETCHED", response.data.dati);
         })
         .catch(error => {
