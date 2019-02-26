@@ -9,9 +9,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     hostname:
-      window.location.hostname === "localhost"
+      location.hostname === "localhost"
         ? "demo.condivision.cloud"
-        : window.location.hostname,
+        : location.hostname,
     selectedGroup: null,
     layout: {
       ambiente_id: "",
