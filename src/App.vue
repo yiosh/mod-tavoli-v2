@@ -27,7 +27,7 @@
       <div class="main-container">
         <v-layout row wrap justify-center align-content-center>
           <v-flex xs12 align-self-center>
-            <router-view />
+            <Canvas></Canvas>
           </v-flex>
         </v-layout>
       </div>
@@ -38,12 +38,14 @@
 
 <script>
 import Sidebar from "@/components/Sidebar";
+import Canvas from "@/components/Canvas";
 import { EventBus } from "./event-bus.js";
 
 export default {
   name: "Home",
   components: {
-    Sidebar
+    Sidebar,
+    Canvas
   },
   data: () => ({
     title: null,
