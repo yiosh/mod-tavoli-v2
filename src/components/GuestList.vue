@@ -94,7 +94,7 @@
                 <v-icon small class="mr-2" @click="editItem(props.item)"
                   >edit</v-icon
                 >
-                <v-icon small @click="deleteItem(props.item)">delete</v-icon>
+                <v-icon small @click="deleteGuest(props.item)">delete</v-icon>
               </td>
             </template>
             <!-- <template slot="no-data"
@@ -106,9 +106,6 @@
         <v-card-actions>
           <v-btn color="blue darken-1" flat @click="dialog = false"
             >Chiudi</v-btn
-          >
-          <v-btn color="blue darken-1" flat @click="dialog = false"
-            >Salva</v-btn
           >
         </v-card-actions>
       </v-card>
@@ -124,6 +121,7 @@
 import axios from "axios";
 import { EventBus } from "../event-bus.js";
 import _ from "lodash";
+import TMService from "@/services/TMService.js";
 
 export default {
   name: "GuestList",
@@ -180,19 +178,14 @@ export default {
       this.guestDialog = true;
     },
 
-    deleteItem(item) {
-      const index = this.guests.indexOf(item);
+    deleteGuest(guest) {
+      const index = this.guests.indexOf(guest);
 
       confirm(
-        `Sei sicuro di voler eliminare a ${item.nome} ${item.cognome}?`
+        `Sei sicuro di voler eliminare a ${guest.nome} ${guest.cognome}?`
       ) &&
         // Create a New Guest
-        axios
-          .get(
-            `https://${
-              this.$store.state.hostname
-            }/fl_api/tables-v1/?delete_guest&token=1&guest_id=${item.id}`
-          )
+        TMService.deleteGuest(guest.id)
           .then(response => {
             console.log("Response", response);
             this.guests.splice(index, 1);
@@ -214,20 +207,7 @@ export default {
       if (this.editedIndex > -1) {
         // Update existing guest
         let itemToEdit = this.editedItem;
-        axios
-          .get(
-            `https://${
-              this.$store.state.hostname
-            }/fl_api/tables-v1/?update_guest&token=1&guest_id=${
-              this.editedItem.id
-            }&cognome=${this.editedItem.cognome}&peoples=${
-              this.editedItem.peoples
-            }&nome=${this.editedItem.nome}&baby=${
-              this.editedItem.baby
-            }&chairs_only=${this.editedItem.chairs_only}&highchair=${
-              this.editedItem.high_chair
-            }&note_intolleranze=${this.editedItem.note_intolleranze}`
-          )
+        TMService.updateGuest(itemToEdit)
           .then(response => {
             console.log("AJAX Response: ", response.data);
             let index = _.findIndex(this.guests, guest => {
@@ -238,25 +218,11 @@ export default {
           .catch(error => {
             console.log(error);
           });
-        console.log("editeditem after", this.editedItem);
       } else {
         // Create a New Guest
         let $this = this;
         let itemToEdit = this.editedItem;
-        axios
-          .get(
-            `https://${
-              this.$store.state.hostname
-            }/fl_api/tables-v1/?insert_guest&token=1&table_id=${
-              this.tableId
-            }&cognome=${this.editedItem.cognome}&peoples=${
-              this.editedItem.peoples
-            }&nome=${this.editedItem.nome}&baby=${
-              this.editedItem.baby
-            }&chairs_only=${this.editedItem.chairs_only}&highchair=${
-              this.editedItem.high_chair
-            }&note_intolleranze=${this.editedItem.note_intolleranze}`
-          )
+        TMService.createGuest($this.tableId, itemToEdit)
           .then(response => {
             itemToEdit.id = response.data.id;
             $this.guests.push(itemToEdit);
@@ -272,6 +238,7 @@ export default {
   created() {
     EventBus.$on("table-select", group => {
       let id = group.attrs.table.id;
+      this.tableId = id;
       if (this.guests.length == 0) {
         this.$store.dispatch("FETCH_GUESTS", id);
       }
