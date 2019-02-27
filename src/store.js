@@ -216,18 +216,24 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-    FETCH_GUESTS({ commit }, tableId) {
-      TMService.fetchGuests(tableId)
-        .then(response => {
-          // handle success
-          console.log("guests", response.data.dati);
+    FETCH_GUESTS({ commit, state }, tableId) {
+      if (
+        _.findIndex(state.guests, guest => {
+          return guest.table_id == tableId;
+        }) == -1
+      ) {
+        TMService.fetchGuests(tableId)
+          .then(response => {
+            // handle success
+            console.log("guests", response.data.dati);
 
-          commit("FETCH_GUESTS", response.data.dati);
-        })
-        .catch(error => {
-          // handle error
-          console.log(error);
-        });
+            commit("FETCH_GUESTS", response.data.dati);
+          })
+          .catch(error => {
+            // handle error
+            console.log(error);
+          });
+      }
     }
   },
   getters: {

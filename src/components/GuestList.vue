@@ -81,7 +81,11 @@
               </v-card>
             </v-dialog>
           </v-toolbar>
-          <v-data-table :headers="headers" :items="guests">
+          <v-data-table
+            :headers="headers"
+            :items="guests"
+            no-data-text="Non ci sono ospiti in questo tavolo"
+          >
             <template slot="items" slot-scope="props">
               <td>{{ props.item.nome }}</td>
               <td>{{ props.item.cognome }}</td>
@@ -98,7 +102,7 @@
               </td>
             </template>
             <!-- <template slot="no-data"
-              >There are no guests in this table</template
+              >Non ci sono ospiti in questo tavolo</template
             >-->
           </v-data-table>
         </v-card-text>
@@ -118,7 +122,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { EventBus } from "../event-bus.js";
 import _ from "lodash";
 import TMService from "@/services/TMService.js";
@@ -177,7 +180,6 @@ export default {
       this.editedItem = Object.assign({}, item);
       this.guestDialog = true;
     },
-
     deleteGuest(guest) {
       const index = this.guests.indexOf(guest);
 
@@ -194,7 +196,6 @@ export default {
             console.log(error);
           });
     },
-
     close() {
       this.guestDialog = false;
       setTimeout(() => {
@@ -202,7 +203,6 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-
     save() {
       if (this.editedIndex > -1) {
         // Update existing guest
@@ -234,18 +234,19 @@ export default {
       this.close();
     }
   },
-
   created() {
     EventBus.$on("table-select", group => {
       let id = group.attrs.table.id;
       this.tableId = id;
-      if (this.guests.length == 0) {
-        this.$store.dispatch("FETCH_GUESTS", id);
-      }
+      // if (this.guests.length == 0) {
+      this.$store.dispatch("FETCH_GUESTS", id);
+      // }
     });
 
     EventBus.$on("guests-fetched", () => {
-      this.guests = this.$store.state.guests;
+      this.guests = _.filter(this.$store.state.guests, guest => {
+        return guest.table_id == this.tableId;
+      });
     });
 
     EventBus.$on("guest-list-select", () => {
