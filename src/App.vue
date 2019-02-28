@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app style="background:#d8d8d8">
     <v-container fluid fill-height v-show="loading == true">
       <v-layout fill-height>
         <v-flex class="text-xs-center" align-self-center>
@@ -105,6 +105,7 @@ export default {
 * {
   font-family: "Poppins", sans-serif;
 }
+
 .main-container {
   display: grid;
   margin: 1em;
