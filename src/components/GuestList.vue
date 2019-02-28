@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog">
       <v-card>
-        <v-toolbar dark color="#424242">
+        <v-toolbar flat dark color="#424242">
           <v-toolbar-title>Elenco degli Ospiti</v-toolbar-title>
           <v-spacer></v-spacer>
 

@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
-        <v-toolbar dark>
+        <v-toolbar flat color="#424242" dark>
           <v-toolbar-title>Aggiungi Tavolo</v-toolbar-title>
           <v-spacer></v-spacer>
 
