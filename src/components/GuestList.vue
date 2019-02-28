@@ -84,6 +84,8 @@
           <v-data-table
             :headers="headers"
             :items="guests"
+            rows-per-page-text="Righe per pagina"
+            :rows-per-page-items="[5, 10, 25, { text: 'Tutti', value: -1 }]"
             no-data-text="Non ci sono ospiti in questo tavolo"
           >
             <template slot="items" slot-scope="props">
@@ -143,7 +145,7 @@ export default {
         { text: "Chairs", value: "chairs_only" },
         { text: "Highchairs", value: "high_chair" },
         { text: "Note", value: "note_intolleranze" },
-        { text: "Actions", value: "nome", sortable: false }
+        { text: "Azioni", value: "nome", sortable: false }
       ],
       guests: [],
       editedIndex: -1,
