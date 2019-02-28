@@ -1,5 +1,6 @@
 <template>
   <v-card
+    class="cnv-canvas elevation-2"
     :class="{
       horizontal: orientation == 0,
       vertical: orientation == 1
@@ -186,5 +187,9 @@ export default {
 
 .horizontal {
   width: 1200px;
+}
+
+.cnv-canvas {
+  border-radius: 0.5em;
 }
 </style>

@@ -1,13 +1,11 @@
 <template>
   <v-layout column wrap>
     <v-navigation-drawer
-      v-model="drawer"
-      clipped
-      hide-overlay
       right
       app
       dark
       :mini-variant="mini"
+      class="cnv-sidebar elevation-2"
     >
       <v-toolbar flat class="transparent">
         <v-list class="pa-0">
@@ -17,7 +15,7 @@
             </v-list-tile-avatar>
 
             <v-list-tile-content>
-              <v-list-tile-title>Condivision Cloud</v-list-tile-title>
+              <v-list-tile-title>Condivision Cloud Beta</v-list-tile-title>
             </v-list-tile-content>
 
             <v-list-tile-action>
@@ -30,8 +28,6 @@
       </v-toolbar>
 
       <v-list class="pt-0" dense>
-        <v-divider></v-divider>
-
         <v-list-tile
           v-for="item in items"
           :key="item.title"
@@ -106,3 +102,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.cnv-sidebar {
+  margin-top: 1em !important;
+  margin-bottom: 1em;
+  margin-right: 1em;
+  border-radius: 0.5em;
+  height: auto !important;
+  /* width: auto !important; */
+}
+</style>

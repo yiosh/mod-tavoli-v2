@@ -2,7 +2,7 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialog" max-width="600px">
       <v-card>
-        <v-toolbar dark>
+        <v-toolbar flat color="#424242" dark>
           <v-toolbar-title>Modifica Tavolo</v-toolbar-title>
           <v-spacer></v-spacer>
 
@@ -78,7 +78,7 @@
                   <v-btn flat :value="Number(45)">45°</v-btn>
                   <v-btn flat :value="Number(90)">90°</v-btn>
                   <v-btn flat :value="Number(180)">180°</v-btn>
-                  <v-btn flat :value="customAngolareVal">Costum</v-btn>
+                  <v-btn flat :value="customAngolareVal">Custom</v-btn>
                 </v-btn-toggle>
               </v-flex>
               <!-- <v-flex xs12 sm6 md4 class="py-2">

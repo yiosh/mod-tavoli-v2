@@ -1,10 +1,10 @@
 <template>
   <v-layout>
-    <v-toolbar dark color="#424242">
+    <v-toolbar flat dark color="#424242" class="cnv-toolbar">
       <v-toolbar-title>{{ layoutName }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn flat @click="handleClick('create-table')">
-        <i class="fas fa-plus-circle icon-margin"></i>
+        <i class="fas fa-plus icon-margin"></i>
         Aggiungi Tavolo
       </v-btn>
       <v-divider v-if="selectedGroup != null" vertical></v-divider>
@@ -85,5 +85,10 @@ export default {
 <style scoped>
 .icon-margin {
   margin-right: 0.4em;
+}
+
+.cnv-toolbar {
+  border-top-left-radius: 0.5em;
+  border-top-right-radius: 0.5em;
 }
 </style>

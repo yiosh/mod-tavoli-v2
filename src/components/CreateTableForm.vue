@@ -254,12 +254,12 @@ export default {
         name: textName,
         number,
         text: name + (number == 0 ? "" : number),
-        fontSize: 20,
-        fontFamily: "Calibri",
+        fontSize: 18,
+        fontFamily: "Poppins",
+        fontStyle: "bold",
         fill: "black",
-        stroke: "black",
-        padding: 25,
-        strokeWidth: 1
+        verticalAlign: "middle",
+        padding: 5
       };
 
       switch (type) {

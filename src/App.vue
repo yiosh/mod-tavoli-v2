@@ -1,10 +1,9 @@
 <template>
   <v-app>
-    <v-container fluid fill-height>
+    <v-container fluid fill-height v-show="loading == true">
       <v-layout fill-height>
         <v-flex class="text-xs-center" align-self-center>
           <v-progress-circular
-            v-show="loading == true"
             align-self-center
             style="margin: auto"
             :size="70"
@@ -16,13 +15,12 @@
       </v-layout>
     </v-container>
 
-    <v-toolbar v-show="loading == false" app>
+    <!-- <v-toolbar v-show="loading == false" app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Condivision Cloud Beta</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-    </v-toolbar>
-
+    </v-toolbar>-->
     <v-content v-show="loading == false">
       <div class="main-container">
         <v-layout row wrap justify-center align-content-center>
@@ -104,6 +102,9 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: "Poppins", sans-serif;
+}
 .main-container {
   display: grid;
   margin: 1em;
