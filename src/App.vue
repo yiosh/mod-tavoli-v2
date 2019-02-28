@@ -24,7 +24,7 @@
     <v-content v-show="loading == false">
       <div class="main-container">
         <v-layout row wrap justify-center align-content-center>
-          <v-flex xs12 align-self-center>
+          <v-flex xs12 align-self-center style="margin: auto">
             <Canvas></Canvas>
           </v-flex>
         </v-layout>
@@ -108,7 +108,8 @@ export default {
 
 .main-container {
   display: grid;
-  margin: 1em;
+  margin: auto;
+  height: 100%;
 }
 .progress-circle {
   flex: none;
