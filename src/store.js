@@ -141,6 +141,12 @@ export default new Vuex.Store({
     },
     ADD_GUEST(state, newGuest) {
       state.guests.push(newGuest);
+    },
+    UPDATE_GUEST(state, updatedGuest) {
+      let index = state.guests.findIndex(guest => {
+        return guest.id == updatedGuest.id;
+      });
+      Object.assign(state.guests[index], updatedGuest);
     }
   },
   actions: {
@@ -222,6 +228,17 @@ export default new Vuex.Store({
         .then(response => {
           const newGuest = response.data.id;
           commit("ADD_GUEST", newGuest);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    updateGuest({ commit }, guest) {
+      TMService.updateGuest(guest)
+        .then(response => {
+          const updatedGuest = response.data.dati[0];
+          console.log("AJAX Response: ", response.data);
+          commit("UPDATE_GUEST", updatedGuest);
         })
         .catch(error => {
           console.log(error);

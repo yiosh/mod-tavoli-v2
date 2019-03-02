@@ -210,18 +210,9 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         // Update existing guest
-        let itemToEdit = this.editedItem;
-        TMService.updateGuest(itemToEdit)
-          .then(response => {
-            console.log("AJAX Response: ", response.data);
-            let index = _.findIndex(this.guests, guest => {
-              return guest.id == itemToEdit.id;
-            });
-            Object.assign(this.guests[index], itemToEdit);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        // let itemToEdit = this.editedItem;
+        let guest = this.editedItem;
+        this.$store.dispatch("updateGuest", guest);
       } else {
         // Create a New Guest
         let guest = this.editedItem;
