@@ -28,14 +28,14 @@ export default {
       `/fl_api/tables-v1/?get_tables&token=1&board_id=${layoutId}`
     );
   },
-  fetchGuests(tableId) {
+  getGuests(layoutId) {
     return apiClient.get(
-      `/fl_api/tables-v1/?get_guests&token=1&table_id=${tableId}`
+      `/fl_api/tables-v1/?get_guests&token=1&layout_id=${layoutId}`
     );
   },
-  createGuest(tableId, guest) {
+  addGuest(layoutId, tableId, guest) {
     return apiClient.get(
-      `/fl_api/tables-v1/?insert_guest&token=1&table_id=${tableId}&cognome=${
+      `/fl_api/tables-v1/?insert_guest&token=1&layout_id=${layoutId}&table_id=${tableId}&cognome=${
         guest.cognome
       }&peoples=${guest.peoples}&nome=${guest.nome}&baby=${
         guest.baby

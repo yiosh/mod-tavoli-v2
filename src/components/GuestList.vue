@@ -147,7 +147,6 @@ export default {
         { text: "Note", value: "note_intolleranze" },
         { text: "Azioni", value: "nome", sortable: false }
       ],
-      guests: [],
       editedIndex: -1,
       editedItem: {
         id: null,
@@ -174,6 +173,9 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Crea Nuovo Ospite" : "Modifica Ospite";
+    },
+    guests() {
+      return this.$store.getters.guests(this.tableId);
     }
   },
   methods: {
@@ -222,16 +224,9 @@ export default {
           });
       } else {
         // Create a New Guest
-        let $this = this;
-        let itemToEdit = this.editedItem;
-        TMService.createGuest($this.tableId, itemToEdit)
-          .then(response => {
-            itemToEdit.id = response.data.id;
-            $this.guests.push(itemToEdit);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        let guest = this.editedItem;
+        const tableId = this.tableId;
+        this.$store.dispatch("addGuest", { tableId, guest });
       }
       this.close();
     }
@@ -241,15 +236,15 @@ export default {
       let id = group.attrs.table.id;
       this.tableId = id;
       // if (this.guests.length == 0) {
-      this.$store.dispatch("getGuests", id);
+      // this.$store.dispatch("getGuests", id);
       // }
     });
 
-    EventBus.$on("guests-fetched", () => {
-      this.guests = _.filter(this.$store.state.guests, guest => {
-        return guest.table_id == this.tableId;
-      });
-    });
+    // EventBus.$on("guests-fetched", () => {
+    //   this.guests = _.filter(this.$store.state.guests, guest => {
+    //     return guest.table_id == this.tableId;
+    //   });
+    // });
 
     EventBus.$on("guest-list-select", () => {
       if (this.$store.state.selectedGroup != null) {

@@ -138,6 +138,9 @@ export default new Vuex.Store({
     SET_ORIENTATION(state, payload) {
       state.configKonva.width = payload.width;
       state.configKonva.height = payload.height;
+    },
+    ADD_GUEST(state, newGuest) {
+      state.guests.push(newGuest);
     }
   },
   actions: {
@@ -200,29 +203,37 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-    getGuests({ commit, state }, tableId) {
-      if (
-        _.findIndex(state.guests, guest => {
-          return guest.table_id == tableId;
-        }) == -1
-      ) {
-        TMService.fetchGuests(tableId)
-          .then(response => {
-            // handle success
-            console.log("guests", response.data.dati);
+    getGuests({ commit }, layoutId) {
+      TMService.getGuests(layoutId)
+        .then(response => {
+          // handle success
+          console.log("guests", response.data.dati);
 
-            commit("GET_GUESTS", response.data.dati);
-          })
-          .catch(error => {
-            // handle error
-            console.log(error);
-          });
-      }
+          commit("GET_GUESTS", response.data.dati);
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });
+    },
+    addGuest({ commit, state }, { tableId, guest }) {
+      const layoutId = state.layoutId;
+      TMService.addGuest(layoutId, tableId, guest)
+        .then(response => {
+          const newGuest = response.data.id;
+          commit("ADD_GUEST", newGuest);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
   getters: {
     groupsLength(state) {
       return state.groups.length;
+    },
+    guests: state => tableId => {
+      return state.guests.filter(guest => guest.table_id === tableId);
     }
   }
 });
