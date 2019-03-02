@@ -48,9 +48,23 @@
             :ref="group.table.textConfig.name"
             :config="group.table.textConfig"
           ></v-text>
+          <v-text
+            :ref="group.guestCounters.name"
+            :config="group.guestCounters"
+          ></v-text>
         </v-group>
       </v-layer>
     </v-stage>
+    <v-divider></v-divider>
+    <v-card-actions>
+      <h3 class="mr-3">TOTAL :</h3>
+      <!-- <v-spacer></v-spacer> -->
+      <p>
+        Persone: {{ guestTotals.people }}, Bambini: {{ guestTotals.babies }},
+        Sedie: {{ guestTotals.chairs }}, Seggiolone:
+        {{ guestTotals.highchairs }}
+      </p>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -79,6 +93,9 @@ export default {
     },
     groups() {
       return this.$store.state.groups;
+    },
+    guestTotals() {
+      return this.$store.getters.guestTotals;
     }
   },
   methods: {

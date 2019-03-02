@@ -90,10 +90,15 @@ export default {
           height: 792
         });
       }
+      this.$store.dispatch("getInitialData", layoutId);
       this.$store.dispatch("setLayout", layoutId);
       this.$store.dispatch("fetchTableTypes");
       this.$store.dispatch("getTables", layoutId);
       this.$store.dispatch("getGuests", layoutId);
+
+      // if (this.$store) {
+
+      // }
     }
     EventBus.$on("loading-done", () => {
       this.loading = false;

@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import _ from "lodash";
 import TMService from "@/services/TMService";
 import { EventBus } from "./event-bus.js";
+import axios from "axios";
 
 Vue.use(Vuex);
 
@@ -71,11 +72,9 @@ export default new Vuex.Store({
           state.guests.push(guest);
         });
       }
-      EventBus.$emit("guests-fetched");
     },
     GET_TABLES(state, payload) {
       state.tablesFetched = payload;
-      EventBus.$emit("fetch-tables");
     },
     FETCH_TABLE_TYPES(state, payload) {
       state.tableTypes = payload;
@@ -155,6 +154,16 @@ export default new Vuex.Store({
     },
     setLayer(state, payload) {
       state.commit("SET_LAYER", payload);
+    },
+    getInitialData({ commit }, layoutId) {
+      TMService.getInitData(layoutId).then(
+        axios.spread(function(acct, perms) {
+          console.log("acct", acct);
+          console.log("perms", perms);
+
+          // Both requests are now complete
+        })
+      );
     },
     getTables({ commit }, layoutId) {
       TMService.getTables(layoutId)
@@ -251,6 +260,32 @@ export default new Vuex.Store({
     },
     guests: state => tableId => {
       return state.guests.filter(guest => guest.table_id === tableId);
+    },
+    guestTotals(state) {
+      const guests = state.guests;
+      let guestTotals = {
+        people: 0,
+        babies: 0,
+        chairs: 0,
+        highchairs: 0
+      };
+
+      guests.forEach(guest => {
+        if (Number(guest.people) > 0) {
+          guestTotals.people += Number(guest.people);
+        }
+        if (Number(guest.baby) > 0) {
+          guestTotals.babies += Number(guest.baby);
+        }
+        if (Number(guest.chairs_only) > 0) {
+          guestTotals.chairs += Number(guest.chairs_only);
+        }
+        if (Number(guest.high_chair) > 0) {
+          guestTotals.highchairs += Number(guest.high_chair);
+        }
+      });
+
+      return guestTotals;
     }
   }
 });

@@ -44,6 +44,9 @@ export default {
       }&note_intolleranze=${guest.note_intolleranze}`
     );
   },
+  getInitData(layoutId) {
+    return axios.all([this.getTables(layoutId), this.getGuests(layoutId)]);
+  },
   updateGuest(guest) {
     console.log("guest", guest);
     return apiClient.get(

@@ -238,7 +238,8 @@ export default {
       x = 100,
       y = 100,
       angolare = 0,
-      n = false
+      n = false,
+      tableGuests = []
     ) {
       let uID =
         "_" +
@@ -249,6 +250,7 @@ export default {
       let groupName = "g" + uID;
       let tableName = "g" + uID + "-tbl";
       let textName = name ? name : "g" + uID + "-txt";
+      let guestCounterName = "gc" + uID;
       let table = {};
       let textConfig = {
         name: textName,
@@ -258,8 +260,52 @@ export default {
         fontFamily: "Poppins",
         fontStyle: "bold",
         fill: "black",
+        align: "center",
         verticalAlign: "middle",
+        offsetX: 0,
         padding: 5
+      };
+
+      let counters = {
+        people: 0,
+        babies: 0,
+        chairs: 0,
+        highchairs: 0
+      };
+
+      if (tableGuests.length > 0) {
+        tableGuests.forEach(guest => {
+          if (Number(guest.people) > 0) {
+            counters.people += Number(guest.people);
+          }
+          if (Number(guest.baby) > 0) {
+            counters.babies += Number(guest.baby);
+          }
+          if (Number(guest.chairs_only) > 0) {
+            counters.chairs += Number(guest.chairs_only);
+          }
+          if (Number(guest.high_chair) > 0) {
+            counters.highchairs += Number(guest.high_chair);
+          }
+        });
+      }
+
+      let guestCounters = {
+        name: guestCounterName,
+        text: `${counters.people > 0 ? "P" + counters.people : ""} ${
+          counters.babies > 0 ? "B" + counters.babies : ""
+        } ${counters.chairs > 0 ? "S" + counters.chairs : ""} ${
+          counters.highchairs > 0 ? "XS" + counters.highchairs : ""
+        }`,
+        fontSize: 12,
+        fontFamily: "Poppins",
+        fontStyle: "bold",
+        fill: "black",
+        verticalAlign: "middle",
+        align: "center",
+        offsetY: -20,
+        x: size / 10,
+        y: size / 10
       };
 
       switch (type) {
@@ -346,6 +392,7 @@ export default {
         width: 100,
         height: 100,
         draggable: true,
+        guestCounters,
         table
       };
 
@@ -376,7 +423,6 @@ export default {
             }`
           )
           .then(function(response) {
-            console.log("Response", response);
             group.table.id = response.data.id;
           })
           .catch(function(error) {
@@ -389,13 +435,16 @@ export default {
     },
     getTableTypes() {}
   },
-  mounted() {},
   created() {
     EventBus.$on("fetch-tables", () => {
       let tablesFetched = this.$store.state.tablesFetched;
       let tablesFetchedLength = tablesFetched.length;
       if (tablesFetchedLength > 0) {
-        tablesFetched.forEach((payload, index) => {
+        tablesFetched.forEach(payload => {
+          let guests = this.$store.state.guests;
+          let tableGuests = guests.filter(guest => {
+            return guest.table_id == payload.id;
+          });
           this.createTable(
             payload.table_name,
             Number(payload.table_number),
@@ -406,14 +455,16 @@ export default {
             payload.id,
             Number(payload.x),
             Number(payload.y),
-            Number(payload.angolare)
+            Number(payload.angolare),
+            false,
+            tableGuests
           );
-
-          if (tablesFetched.length == index + 1) {
-            EventBus.$emit("loading-done");
-          }
         });
-      } else {
+        let groups = this.$store.state.groups;
+        if (tablesFetched.length == groups.length) {
+          EventBus.$emit("loading-done");
+        }
+      } else if (tablesFetched.length == 0) {
         EventBus.$emit("loading-done");
       }
     });
