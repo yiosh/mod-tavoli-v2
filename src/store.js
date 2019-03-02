@@ -77,7 +77,7 @@ export default new Vuex.Store({
       state.tablesFetched = payload;
       EventBus.$emit("fetch-tables");
     },
-    SET_TABLE_TYPES_FETCHED(state, payload) {
+    FETCH_TABLE_TYPES(state, payload) {
       state.tableTypes = payload;
     },
     ADD_NEW_TABLE(state, payload) {
@@ -166,7 +166,7 @@ export default new Vuex.Store({
         });
       // state.commit("SET_TABLES_FETCHED", payload);
     },
-    SET_TABLE_TYPES_FETCHED({ commit }) {
+    fetchTableTypes({ commit }) {
       TMService.fetchTableTypes()
         .then(response => {
           // handle success
@@ -174,7 +174,7 @@ export default new Vuex.Store({
           for (let index = 1; index < response.data.dati.length; index++) {
             tableTypes.push(response.data.dati[index]);
           }
-          commit("SET_TABLE_TYPES_FETCHED", tableTypes);
+          commit("FETCH_TABLE_TYPES", tableTypes);
         })
         .catch(error => {
           // handle error

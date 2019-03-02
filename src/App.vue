@@ -91,7 +91,7 @@ export default {
         });
       }
       this.$store.dispatch("FETCH_LAYOUT", layoutId);
-      this.$store.dispatch("SET_TABLE_TYPES_FETCHED");
+      this.$store.dispatch("fetchTableTypes");
       this.$store.dispatch("SET_TABLES_FETCHED", layoutId);
     }
     EventBus.$on("loading-done", () => {
