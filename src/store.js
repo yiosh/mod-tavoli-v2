@@ -65,7 +65,7 @@ export default new Vuex.Store({
     SET_LAYER(state, payload) {
       state.layer = payload;
     },
-    FETCH_GUESTS(state, payload) {
+    GET_GUESTS(state, payload) {
       if (payload.length > 0) {
         payload.forEach(guest => {
           state.guests.push(guest);
@@ -73,24 +73,24 @@ export default new Vuex.Store({
       }
       EventBus.$emit("guests-fetched");
     },
-    SET_TABLES_FETCHED(state, payload) {
+    GET_TABLES(state, payload) {
       state.tablesFetched = payload;
       EventBus.$emit("fetch-tables");
     },
     FETCH_TABLE_TYPES(state, payload) {
       state.tableTypes = payload;
     },
-    ADD_NEW_TABLE(state, payload) {
+    ADD_TABLE(state, payload) {
       state.groups.push(payload);
     },
-    REMOVE_TABLE(state, payload) {
+    DELETE_TABLE(state, payload) {
       let indexToRemove = _.findIndex(state.groups, group => {
         return group.table.id == payload;
       });
       console.log("Index", indexToRemove);
       state.groups.splice(indexToRemove, 1);
     },
-    EDIT_TABLE(state, payload) {
+    UPDATE_TABLE(state, payload) {
       let indexToEdit = _.findIndex(state.groups, group => {
         return group.table.id == payload.id;
       });
@@ -132,33 +132,27 @@ export default new Vuex.Store({
       tableToEdit.textConfig.number = payload.number;
       tableToEdit.textConfig.text = payload.text + payload.number;
     },
-    CHANGE_DIALOG(state, payload) {
-      state.dialog = payload;
-    },
-    CHANGE_SELECTED_GROUP(state, payload) {
+    SELECT_GROUP(state, payload) {
       state.selectedGroup = payload;
     },
-    CHANGE_GROUP(state, payload) {
-      state.selectedGroup = payload;
-    },
-    CHANGE_ORIENTATION(state, payload) {
+    SET_ORIENTATION(state, payload) {
       state.configKonva.width = payload.width;
       state.configKonva.height = payload.height;
     }
   },
   actions: {
-    SET_STAGE(state, payload) {
+    setStage(state, payload) {
       state.commit("SET_STAGE", payload);
     },
-    SET_LAYER(state, payload) {
+    setLayer(state, payload) {
       state.commit("SET_LAYER", payload);
     },
-    SET_TABLES_FETCHED({ commit }, layoutId) {
+    getTables({ commit }, layoutId) {
       TMService.getTables(layoutId)
         .then(response => {
           // handle success
           console.log("Tables Fetched:", response.data.dati);
-          commit("SET_TABLES_FETCHED", response.data.dati);
+          commit("GET_TABLES", response.data.dati);
         })
         .catch(error => {
           // handle error
@@ -181,31 +175,22 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-    SET_GUESTS(state, payload) {
-      state.commit("SET_GUESTS", payload);
+    addTable(state, payload) {
+      state.commit("ADD_TABLE", payload);
     },
-    ADD_NEW_TABLE(state, payload) {
-      state.commit("ADD_NEW_TABLE", payload);
+    deleteTable(state, payload) {
+      state.commit("DELETE_TABLE", payload);
     },
-    REMOVE_TABLE(state, payload) {
-      state.commit("REMOVE_TABLE", payload);
+    updateTable(state, payload) {
+      state.commit("UPDATE_TABLE", payload);
     },
-    EDIT_TABLE(state, payload) {
-      state.commit("EDIT_TABLE", payload);
+    selectGroup(state, payload) {
+      state.commit("SELECT_GROUP", payload);
     },
-    CHANGE_DIALOG(state, payload) {
-      state.commit("CHANGE_DIALOG", payload);
+    setOrientation(state, payload) {
+      state.commit("SET_ORIENTATION", payload);
     },
-    CHANGE_SELECTED_GROUP(state, payload) {
-      state.commit("CHANGE_SELECTED_GROUP", payload);
-    },
-    CHANGE_GROUP(state, payload) {
-      state.commit("CHANGE_TABLE", payload);
-    },
-    CHANGE_ORIENTATION(state, payload) {
-      state.commit("CHANGE_ORIENTATION", payload);
-    },
-    FETCH_LAYOUT({ commit }, layoutId) {
+    setLayout({ commit }, layoutId) {
       TMService.fetchLayout(layoutId)
         .then(response => {
           // handle success
@@ -216,7 +201,7 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-    FETCH_GUESTS({ commit, state }, tableId) {
+    getGuests({ commit, state }, tableId) {
       if (
         _.findIndex(state.guests, guest => {
           return guest.table_id == tableId;
@@ -227,7 +212,7 @@ export default new Vuex.Store({
             // handle success
             console.log("guests", response.data.dati);
 
-            commit("FETCH_GUESTS", response.data.dati);
+            commit("GET_GUESTS", response.data.dati);
           })
           .catch(error => {
             // handle error

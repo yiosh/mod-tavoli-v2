@@ -136,7 +136,7 @@ export default {
       // if click on empty area - remove all transformers
       if (e.target === stage) {
         if (this.$store.getters.GET_SELECTED_GROUP != null) {
-          this.$store.dispatch("CHANGE_SELECTED_GROUP", null);
+          this.$store.dispatch("selectGroup", null);
           stage.find("Transformer").destroy();
           stage.draw();
           EventBus.$emit("table-unselect");
@@ -163,14 +163,14 @@ export default {
         layer.add(groupEl);
         layer.draw();
 
-        this.$store.dispatch("CHANGE_SELECTED_GROUP", groupEl.attrs);
+        this.$store.dispatch("selectGroup", groupEl.attrs);
         EventBus.$emit("table-select", groupEl);
       }
     }
   },
   mounted() {
-    this.$store.dispatch("SET_STAGE", this.$refs.stage.getStage());
-    this.$store.dispatch("SET_LAYER", this.$refs.layer);
+    this.$store.dispatch("setStage", this.$refs.stage.getStage());
+    this.$store.dispatch("setLayer", this.$refs.layer);
   }
 };
 </script>

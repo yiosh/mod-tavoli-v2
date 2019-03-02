@@ -241,7 +241,7 @@ export default {
       let id = group.attrs.table.id;
       this.tableId = id;
       // if (this.guests.length == 0) {
-      this.$store.dispatch("FETCH_GUESTS", id);
+      this.$store.dispatch("getGuests", id);
       // }
     });
 

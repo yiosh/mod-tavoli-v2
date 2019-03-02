@@ -85,14 +85,14 @@ export default {
       alert('Please add a "layout_id paramenter!"');
     } else {
       if (orientation == 1) {
-        this.$store.dispatch("CHANGE_ORIENTATION", {
+        this.$store.dispatch("setOrientation", {
           width: 1200,
           height: 792
         });
       }
-      this.$store.dispatch("FETCH_LAYOUT", layoutId);
+      this.$store.dispatch("setLayout", layoutId);
       this.$store.dispatch("fetchTableTypes");
-      this.$store.dispatch("SET_TABLES_FETCHED", layoutId);
+      this.$store.dispatch("getTables", layoutId);
     }
     EventBus.$on("loading-done", () => {
       this.loading = false;

@@ -290,7 +290,7 @@ export default {
       if (
         JSON.stringify(this.editedItem) !== JSON.stringify(this.defaultItem)
       ) {
-        this.$store.dispatch("EDIT_TABLE", newItem);
+        this.$store.dispatch("updateTable", newItem);
         this.$store.state.stage.draw();
         this.defaultItem = Object.assign({}, newItem);
 
@@ -322,7 +322,7 @@ export default {
       let answer = confirm("You sure you want to remove this table?");
       console.log("Confirm", answer);
       if (confirm) {
-        this.$store.dispatch("REMOVE_TABLE", this.editedItem.id);
+        this.$store.dispatch("deleteTable", this.editedItem.id);
         axios
           .get(
             `https://${

@@ -384,40 +384,13 @@ export default {
           });
       }
       // Add new group to the store
-      this.$store.dispatch("ADD_NEW_TABLE", group);
+      this.$store.dispatch("addTable", group);
       this.dialog = false;
     },
     getTableTypes() {}
   },
   mounted() {},
   created() {
-    // if (this.$store.state.tablesFetched.length > 0) {
-    //   console.log("Worked");
-    //   let tablesFetched = this.$store.state.tablesFetched;
-    //   let tablesFetchedLength = tablesFetched.length;
-    //   if (tablesFetchedLength > 0) {
-    //     tablesFetched.forEach((payload, index) => {
-    //       this.createTable(
-    //         payload.table_name,
-    //         Number(payload.table_number),
-    //         Number(payload.size),
-    //         Number(payload.scale_x),
-    //         Number(payload.scale_y),
-    //         this.tableTypeParser(payload.type_id),
-    //         payload.id,
-    //         Number(payload.x),
-    //         Number(payload.y),
-    //         Number(payload.angolare)
-    //       );
-
-    //       if (tablesFetched.length == index + 1) {
-    //         EventBus.$emit("loading-done");
-    //       }
-    //     });
-    //   } else {
-    //     EventBus.$emit("loading-done");
-    //   }
-    // }
     EventBus.$on("fetch-tables", () => {
       let tablesFetched = this.$store.getters.GET_TABLES_FETCHED;
       let tablesFetchedLength = tablesFetched.length;
