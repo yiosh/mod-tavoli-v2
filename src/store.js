@@ -158,7 +158,6 @@ export default new Vuex.Store({
           // handle error
           console.log(error);
         });
-      // state.commit("SET_TABLES_FETCHED", payload);
     },
     fetchTableTypes({ commit }) {
       TMService.fetchTableTypes()
