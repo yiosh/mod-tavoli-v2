@@ -8,7 +8,7 @@
       <v-list>
         <v-list-tile
           :id="group.name"
-          v-for="group in this.$store.getters.GET_GROUPS"
+          v-for="group in this.$store.state.groups"
           :key="group.name"
           :class
           @click="tableSelect($event, group.name)"
@@ -29,12 +29,6 @@
 <script>
 export default {
   name: "TableSelector",
-  data: () => ({}),
-  computed: {
-    // groups() {
-    //   return this.$store.getters.GET_GROUPS;
-    // }
-  },
   methods: {
     // Select table on click and adds a transformer
     tableSelect(e, group) {
@@ -43,7 +37,7 @@ export default {
       stage.find("Transformer").destroy();
       // create new transformer
       var tr = new window.Konva.Transformer();
-      let layer = this.$store.getters.GET_LAYER.getStage(tr);
+      let layer = this.$store.state.layer.getStage(tr);
       let groupEl = stage.find("." + group)[0];
       tr.attachTo(stage.find(name)[0]);
       groupEl.add(tr);

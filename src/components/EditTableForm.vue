@@ -173,10 +173,10 @@ export default {
   }),
   computed: {
     groupsLength() {
-      return this.$store.getters.GET_GROUPS_LENGTH;
+      return this.$store.getters.groupsLength;
     },
     tableTypes() {
-      return this.$store.getters.GET_TABLE_TYPES;
+      return this.$store.state.tableTypes;
     },
     customAngolareVal() {
       return this.editedItem.angolare == 0 ||

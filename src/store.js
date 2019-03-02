@@ -222,36 +222,8 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    GET_GROUPS(state) {
-      return state.groups;
-    },
-    GET_LAYER(state) {
-      return state.layer;
-    },
-    GET_TABLE_TYPES(state) {
-      return state.tableTypes;
-    },
-    GET_TABLES_FETCHED(state) {
-      return state.tablesFetched;
-    },
-
-    GET_CONFIG(state) {
-      return state.configKonva;
-    },
-    GET_GROUPS_LENGTH(state) {
+    groupsLength(state) {
       return state.groups.length;
-    },
-    GET_CREATE_TABLE_FORM(state) {
-      return state.createTableForm;
-    },
-    GET_SELECTED_GROUP(state) {
-      return state.selectedGroup;
-    },
-    GET_LAYOUT_ID(state) {
-      return state.layout.id;
-    },
-    GET_HOSTNAME(state) {
-      return state.hostname;
     }
   }
 });

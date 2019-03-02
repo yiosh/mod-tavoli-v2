@@ -168,10 +168,10 @@ export default {
   }),
   computed: {
     groupsLength() {
-      return this.$store.getters.GET_GROUPS_LENGTH;
+      return this.$store.getters.groupsLength;
     },
     tableTypes() {
-      return this.$store.getters.GET_TABLE_TYPES;
+      return this.$store.state.tableTypes;
     },
     customAngolareVal() {
       return this.createTableForm.angolare == 0 ||
@@ -392,7 +392,7 @@ export default {
   mounted() {},
   created() {
     EventBus.$on("fetch-tables", () => {
-      let tablesFetched = this.$store.getters.GET_TABLES_FETCHED;
+      let tablesFetched = this.$store.state.tablesFetched;
       let tablesFetchedLength = tablesFetched.length;
       if (tablesFetchedLength > 0) {
         tablesFetched.forEach((payload, index) => {

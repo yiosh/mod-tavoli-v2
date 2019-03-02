@@ -69,16 +69,16 @@ export default {
   }),
   computed: {
     hostname() {
-      return this.$store.getters.GET_HOSTNAME;
+      return this.$store.state.hostname;
     },
     orientation() {
       return this.$store.state.layout.orientation;
     },
     stageConfig() {
-      return this.$store.getters.GET_CONFIG;
+      return this.$store.state.configKonva;
     },
     groups() {
-      return this.$store.getters.GET_GROUPS;
+      return this.$store.state.groups;
     }
   },
   methods: {
@@ -109,7 +109,7 @@ export default {
     moveTable(e) {
       let group = e.target.attrs;
       let table = group.table;
-      let layout_id = this.$store.getters.GET_LAYOUT_ID;
+      let layout_id = this.$store.state.layout.id;
 
       axios
         .get(
@@ -135,7 +135,7 @@ export default {
       let stage = this.$store.state.stage;
       // if click on empty area - remove all transformers
       if (e.target === stage) {
-        if (this.$store.getters.GET_SELECTED_GROUP != null) {
+        if (this.$store.state.selectedGroup != null) {
           this.$store.dispatch("selectGroup", null);
           stage.find("Transformer").destroy();
           stage.draw();
@@ -148,7 +148,7 @@ export default {
       let stage = this.$store.state.stage;
       let groupEl = stage.find("." + group)[0];
       console.log("Target", groupEl);
-      if (this.$store.getters.GET_SELECTED_GROUP != groupEl.attrs) {
+      if (this.$store.state.selectedGroup != groupEl.attrs) {
         let name = "." + String(group) + "-tbl";
         stage.find("Transformer").destroy();
         // create new transformer
