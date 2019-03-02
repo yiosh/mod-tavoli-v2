@@ -93,6 +93,7 @@ export default {
       this.$store.dispatch("setLayout", layoutId);
       this.$store.dispatch("fetchTableTypes");
       this.$store.dispatch("getTables", layoutId);
+      this.$store.dispatch("getGuests", layoutId);
     }
     EventBus.$on("loading-done", () => {
       this.loading = false;
