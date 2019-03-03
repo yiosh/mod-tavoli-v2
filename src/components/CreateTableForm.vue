@@ -436,7 +436,7 @@ export default {
     getTableTypes() {}
   },
   created() {
-    EventBus.$on("fetch-tables", () => {
+    EventBus.$on("fetch-done", () => {
       let tablesFetched = this.$store.state.tablesFetched;
       let tablesFetchedLength = tablesFetched.length;
       if (tablesFetchedLength > 0) {
@@ -460,12 +460,6 @@ export default {
             tableGuests
           );
         });
-        let groups = this.$store.state.groups;
-        if (tablesFetched.length == groups.length) {
-          EventBus.$emit("loading-done");
-        }
-      } else if (tablesFetched.length == 0) {
-        EventBus.$emit("loading-done");
       }
     });
 

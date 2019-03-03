@@ -1,6 +1,6 @@
 <template>
   <v-app style="background:#d8d8d8">
-    <v-container fluid fill-height v-show="false">
+    <!-- <v-container fluid fill-height v-show="loading == true">
       <v-layout fill-height>
         <v-flex class="text-xs-center" align-self-center>
           <v-progress-circular
@@ -13,8 +13,7 @@
           ></v-progress-circular>
         </v-flex>
       </v-layout>
-    </v-container>
-
+    </v-container>-->
     <!-- <v-toolbar v-show="loading == false" app>
       <v-toolbar-title class="headline text-uppercase">
         <span>Condivision Cloud Beta</span>
@@ -38,6 +37,7 @@
 import Sidebar from "@/components/Sidebar";
 import Canvas from "@/components/Canvas";
 import { EventBus } from "./event-bus.js";
+import NProgress from "nprogress";
 
 export default {
   name: "Home",
@@ -46,8 +46,8 @@ export default {
     Canvas
   },
   data: () => ({
-    title: null,
-    loading: true
+    title: null
+    // loading: true
   }),
   computed: {
     layout() {
@@ -55,6 +55,9 @@ export default {
     },
     layoutName() {
       return this.$store.state.layout.layout_name;
+    },
+    loading() {
+      return this.$store.state.loading;
     }
   },
   methods: {
@@ -90,7 +93,7 @@ export default {
           height: 792
         });
       }
-      this.$store.dispatch("getInitialData", layoutId);
+      // this.$store.dispatch("getInitialData", layoutId);
       this.$store.dispatch("setLayout", layoutId);
       this.$store.dispatch("fetchTableTypes");
       this.$store.dispatch("getTables", layoutId);

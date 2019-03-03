@@ -4,6 +4,7 @@ import _ from "lodash";
 import TMService from "@/services/TMService";
 import { EventBus } from "./event-bus.js";
 import axios from "axios";
+import NProgress from "nprogress";
 
 Vue.use(Vuex);
 
@@ -14,6 +15,8 @@ export default new Vuex.Store({
         ? "demo.condivision.cloud"
         : location.hostname,
     selectedGroup: null,
+    counter: 0,
+    loading: true,
     layout: {
       ambiente_id: "",
       created_at: "",
@@ -59,6 +62,9 @@ export default new Vuex.Store({
     SET_LAYOUT(state, payload) {
       state.layout = Object.assign({}, payload);
       console.log("Layout", state.layout);
+      if (state.counter == 0) {
+        NProgress.start();
+      }
     },
     SET_STAGE(state, payload) {
       state.stage = payload;
@@ -82,6 +88,11 @@ export default new Vuex.Store({
     },
     ADD_TABLE(state, payload) {
       state.groups.push(payload);
+      state.counter++;
+      if (state.counter == state.tablesFetched.length) {
+        NProgress.done();
+        state.loading = false;
+      }
     },
     DELETE_TABLE(state, payload) {
       let indexToRemove = _.findIndex(state.groups, group => {

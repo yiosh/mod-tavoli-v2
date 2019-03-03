@@ -1,5 +1,4 @@
 import axios from "axios";
-import NProgress from "nprogress";
 import { EventBus } from "../event-bus.js";
 
 let hostname =
@@ -16,14 +15,18 @@ const apiClient = axios.create({
   }
 });
 
+let counter = 0;
+
 apiClient.interceptors.request.use(config => {
-  NProgress.start();
+  counter++;
   return config;
 });
 
 apiClient.interceptors.response.use(response => {
-  NProgress.done();
-  EventBus.$emit("Done");
+  counter--;
+  if (counter == 0) {
+    EventBus.$emit("fetch-done");
+  }
   return response;
 });
 
@@ -56,9 +59,6 @@ export default {
         guest.high_chair
       }&note_intolleranze=${guest.note_intolleranze}`
     );
-  },
-  getInitData(layoutId) {
-    return axios.all([this.getTables(layoutId), this.getGuests(layoutId)]);
   },
   updateGuest(guest) {
     console.log("guest", guest);
