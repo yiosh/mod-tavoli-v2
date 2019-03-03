@@ -72,6 +72,7 @@ export default new Vuex.Store({
           state.guests.push(guest);
         });
       }
+      EventBus.$emit("fetch-tables");
     },
     GET_TABLES(state, payload) {
       state.tablesFetched = payload;

@@ -1,6 +1,6 @@
 <template>
   <v-app style="background:#d8d8d8">
-    <v-container fluid fill-height v-show="loading == true">
+    <v-container fluid fill-height v-show="false">
       <v-layout fill-height>
         <v-flex class="text-xs-center" align-self-center>
           <v-progress-circular

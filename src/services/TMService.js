@@ -1,4 +1,6 @@
 import axios from "axios";
+import NProgress from "nprogress";
+import { EventBus } from "../event-bus.js";
 
 let hostname =
   location.hostname == "localhost"
@@ -12,6 +14,17 @@ const apiClient = axios.create({
     Accept: "application/json",
     "Content-Type": "application/json"
   }
+});
+
+apiClient.interceptors.request.use(config => {
+  NProgress.start();
+  return config;
+});
+
+apiClient.interceptors.response.use(response => {
+  NProgress.done();
+  EventBus.$emit("Done");
+  return response;
 });
 
 export default {
