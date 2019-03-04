@@ -3,7 +3,6 @@ import Vuex from "vuex";
 import _ from "lodash";
 import TMService from "@/services/TMService";
 import { EventBus } from "./event-bus.js";
-import axios from "axios";
 import NProgress from "nprogress";
 
 Vue.use(Vuex);
