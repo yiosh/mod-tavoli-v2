@@ -185,20 +185,11 @@ export default {
       this.guestDialog = true;
     },
     deleteGuest(guest) {
-      const index = this.guests.indexOf(guest);
-
       confirm(
         `Sei sicuro di voler eliminare a ${guest.nome} ${guest.cognome}?`
       ) &&
-        // Create a New Guest
-        TMService.deleteGuest(guest.id)
-          .then(response => {
-            console.log("Response", response);
-            this.guests.splice(index, 1);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+        // Delete Guest
+        this.$store.dispatch("deleteGuest", guest);
     },
     close() {
       this.guestDialog = false;

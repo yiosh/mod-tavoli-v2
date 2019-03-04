@@ -152,12 +152,144 @@ export default new Vuex.Store({
     },
     ADD_GUEST(state, newGuest) {
       state.guests.push(newGuest);
+      let groupIndex = state.groups.findIndex(group => {
+        return group.table.id == newGuest.table_id;
+      });
+
+      let counters = {
+        people: 0,
+        babies: 0,
+        chairs: 0,
+        highchairs: 0,
+        text: ""
+      };
+
+      let guests = state.guests.filter(guest => {
+        return guest.table_id == newGuest.table_id;
+      });
+
+      guests.forEach(guest => {
+        if (Number(guest.peoples) > 0) {
+          counters.people += Number(guest.peoples);
+        }
+        if (Number(guest.baby) > 0) {
+          counters.babies += Number(guest.baby);
+        }
+        if (Number(guest.chairs_only) > 0) {
+          counters.chairs += Number(guest.chairs_only);
+        }
+        if (Number(guest.high_chair) > 0) {
+          counters.highchairs += Number(guest.high_chair);
+        }
+      });
+
+      counters.text = `${counters.people > 0 ? "P" + counters.people : ""} ${
+        counters.babies > 0 ? "B" + counters.babies : ""
+      } ${counters.chairs > 0 ? "S" + counters.chairs : ""} ${
+        counters.highchairs > 0 ? "XS" + counters.highchairs : ""
+      }`;
+
+      state.groups[groupIndex].guestCounters.text = counters.text;
+      console.log("newtext", state.groups[groupIndex].guestCounters.text);
     },
     UPDATE_GUEST(state, updatedGuest) {
+      // console.log("updatedGuest", updatedGuest);
+
+      // console.log("groupIndex", groupIndex);
+      // console.log("oldtext", state.groups[groupIndex].guestCounters.text);
+
       let index = state.guests.findIndex(guest => {
         return guest.id == updatedGuest.id;
       });
+
       Object.assign(state.guests[index], updatedGuest);
+
+      let groupIndex = state.groups.findIndex(group => {
+        return group.table.id == updatedGuest.table_id;
+      });
+
+      let counters = {
+        people: 0,
+        babies: 0,
+        chairs: 0,
+        highchairs: 0,
+        text: ""
+      };
+
+      let guests = state.guests.filter(guest => {
+        return guest.table_id == updatedGuest.table_id;
+      });
+
+      guests.forEach(guest => {
+        if (Number(guest.peoples) > 0) {
+          counters.people += Number(guest.peoples);
+        }
+        if (Number(guest.baby) > 0) {
+          counters.babies += Number(guest.baby);
+        }
+        if (Number(guest.chairs_only) > 0) {
+          counters.chairs += Number(guest.chairs_only);
+        }
+        if (Number(guest.high_chair) > 0) {
+          counters.highchairs += Number(guest.high_chair);
+        }
+      });
+
+      counters.text = `${counters.people > 0 ? "P" + counters.people : ""} ${
+        counters.babies > 0 ? "B" + counters.babies : ""
+      } ${counters.chairs > 0 ? "S" + counters.chairs : ""} ${
+        counters.highchairs > 0 ? "XS" + counters.highchairs : ""
+      }`;
+
+      state.groups[groupIndex].guestCounters.text = counters.text;
+      console.log("newtext", state.groups[groupIndex].guestCounters.text);
+    },
+    DELETE_GUEST(state, guest) {
+      let index = state.guests.findIndex(guestFound => {
+        return guestFound.id == guest.id;
+      });
+
+      state.guests.splice(index, 1);
+
+      let groupIndex = state.groups.findIndex(group => {
+        return group.table.id == guest.table_id;
+      });
+
+      let counters = {
+        people: 0,
+        babies: 0,
+        chairs: 0,
+        highchairs: 0,
+        text: ""
+      };
+
+      let guests = state.guests.filter(guest1 => {
+        return guest1.table_id == guest.table_id;
+      });
+
+      guests.forEach(guest => {
+        if (Number(guest.peoples) > 0) {
+          counters.people += Number(guest.peoples);
+        }
+        if (Number(guest.baby) > 0) {
+          counters.babies += Number(guest.baby);
+        }
+        if (Number(guest.chairs_only) > 0) {
+          counters.chairs += Number(guest.chairs_only);
+        }
+        if (Number(guest.high_chair) > 0) {
+          counters.highchairs += Number(guest.high_chair);
+        }
+      });
+
+      counters.text = `${counters.people > 0 ? "P" + counters.people : ""} ${
+        counters.babies > 0 ? "B" + counters.babies : ""
+      } ${counters.chairs > 0 ? "S" + counters.chairs : ""} ${
+        counters.highchairs > 0 ? "XS" + counters.highchairs : ""
+      }`;
+
+      state.groups[groupIndex].guestCounters.text = counters.text;
+      console.log("newtext", state.groups[groupIndex].guestCounters.text);
     }
   },
   actions: {
@@ -238,10 +370,17 @@ export default new Vuex.Store({
         });
     },
     addGuest({ commit, state }, { tableId, guest }) {
-      const layoutId = state.layoutId;
+      console.log("tableId", tableId);
+      console.log("guest", guest);
+
+      const layoutId = state.layout.id;
       TMService.addGuest(layoutId, tableId, guest)
         .then(response => {
-          const newGuest = response.data.id;
+          console.log("response", response);
+          guest.id = response.data.id;
+          guest.table_id = tableId;
+          const newGuest = guest;
+          console.log("newGuest", newGuest);
           commit("ADD_GUEST", newGuest);
         })
         .catch(error => {
@@ -256,6 +395,16 @@ export default new Vuex.Store({
           commit("UPDATE_GUEST", updatedGuest);
         })
         .catch(error => {
+          console.log(error);
+        });
+    },
+    deleteGuest({ commit }, guest) {
+      TMService.deleteGuest(guest.id)
+        .then(response => {
+          console.log("Response", response);
+          commit("DELETE_GUEST", guest);
+        })
+        .catch(function(error) {
           console.log(error);
         });
     }
@@ -277,8 +426,8 @@ export default new Vuex.Store({
       };
 
       guests.forEach(guest => {
-        if (Number(guest.people) > 0) {
-          guestTotals.people += Number(guest.people);
+        if (Number(guest.peoples) > 0) {
+          guestTotals.people += Number(guest.peoples);
         }
         if (Number(guest.baby) > 0) {
           guestTotals.babies += Number(guest.baby);

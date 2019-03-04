@@ -279,51 +279,9 @@ export default {
         offsetX: size / 4
       };
 
-      let counters = {
-        people: 0,
-        babies: 0,
-        chairs: 0,
-        highchairs: 0
-      };
-
-      if (tableGuests.length > 0) {
-        tableGuests.forEach(guest => {
-          if (Number(guest.people) > 0) {
-            counters.people += Number(guest.people);
-          }
-          if (Number(guest.baby) > 0) {
-            counters.babies += Number(guest.baby);
-          }
-          if (Number(guest.chairs_only) > 0) {
-            counters.chairs += Number(guest.chairs_only);
-          }
-          if (Number(guest.high_chair) > 0) {
-            counters.highchairs += Number(guest.high_chair);
-          }
-        });
-      }
-
-      let counterText = "";
-
-      if (counters.people > 0) {
-        counterText += "P" + counters.people;
-      }
-
-      if (counters.babies > 0) {
-        counterText += " B" + counters.babies;
-      }
-
-      if (counters.chairs > 0) {
-        counterText += " S" + counters.chairs;
-      }
-
-      if (counters.highchairs > 0) {
-        counterText += " XS" + counters.highchairs;
-      }
-
       let guestCounters = {
         name: guestCounterName,
-        text: counterText,
+        text: "",
         fontSize: 12,
         fontFamily: "Poppins",
         fontStyle: "bold",
@@ -332,8 +290,47 @@ export default {
         verticalAlign: "middle",
         rotation: angolare,
         offsetY: (size / 4) * -1,
-        offsetX: (size / 4) * 2
+        offsetX: (size / 4) * 3,
+        counters: {
+          people: 0,
+          babies: 0,
+          chairs: 0,
+          highchairs: 0
+        }
       };
+
+      if (tableGuests.length > 0) {
+        tableGuests.forEach(guest => {
+          if (Number(guest.peoples) > 0) {
+            guestCounters.counters.people += Number(guest.peoples);
+          }
+          if (Number(guest.baby) > 0) {
+            guestCounters.counters.babies += Number(guest.baby);
+          }
+          if (Number(guest.chairs_only) > 0) {
+            guestCounters.counters.chairs += Number(guest.chairs_only);
+          }
+          if (Number(guest.high_chair) > 0) {
+            guestCounters.counters.highchairs += Number(guest.high_chair);
+          }
+        });
+      }
+
+      if (guestCounters.counters.people > 0) {
+        guestCounters.text += "P" + guestCounters.counters.people;
+      }
+
+      if (guestCounters.counters.babies > 0) {
+        guestCounters.text += " B" + guestCounters.counters.babies;
+      }
+
+      if (guestCounters.counters.chairs > 0) {
+        guestCounters.text += " S" + guestCounters.counters.chairs;
+      }
+
+      if (guestCounters.counters.highchairs > 0) {
+        guestCounters.text += " XS" + guestCounters.counters.highchairs;
+      }
 
       switch (type) {
         case "circle":

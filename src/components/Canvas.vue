@@ -53,18 +53,10 @@
             :config="group.guestCounters"
           ></v-text>
         </v-group>
+        <v-text ref="totaleCounter" :config="guestTotals"></v-text>
       </v-layer>
     </v-stage>
     <v-divider></v-divider>
-    <v-card-actions>
-      <h3 class="mr-3">TOTAL :</h3>
-      <!-- <v-spacer></v-spacer> -->
-      <p>
-        Persone: {{ guestTotals.people }}, Bambini: {{ guestTotals.babies }},
-        Sedie: {{ guestTotals.chairs }}, Seggiolone:
-        {{ guestTotals.highchairs }}
-      </p>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -95,7 +87,25 @@ export default {
       return this.$store.state.groups;
     },
     guestTotals() {
-      return this.$store.getters.guestTotals;
+      let guestTotals = this.$store.getters.guestTotals;
+      let totalText = "TOTALE:\n";
+      totalText += "Persone: " + guestTotals.people + ",";
+      totalText += " Bambini: " + guestTotals.babies + ",";
+      totalText += " Sedie: " + guestTotals.chairs + ",";
+      totalText += " Seggiolone: " + guestTotals.highchairs;
+
+      let total = {
+        name: "totaleCounter",
+        text: totalText,
+        fontSize: 18,
+        fontFamily: "Poppins",
+        fontStyle: "bold",
+        fill: "black",
+        width: 600,
+        x: 14,
+        y: 750
+      };
+      return total;
     }
   },
   methods: {
