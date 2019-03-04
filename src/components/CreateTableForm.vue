@@ -274,7 +274,9 @@ export default {
         fontStyle: "bold",
         fill: "black",
         verticalAlign: "middle",
-        rotation: angolare
+        rotation: angolare,
+        offsetY: size / 4,
+        offsetX: size / 4
       };
 
       let counters = {
@@ -328,8 +330,9 @@ export default {
         fill: "black",
         align: "center",
         verticalAlign: "middle",
-        offsetY: -20,
-        offsetX: 15
+        rotation: angolare,
+        offsetY: (size / 4) * -1,
+        offsetX: (size / 4) * 2
       };
 
       switch (type) {
@@ -393,8 +396,8 @@ export default {
             textConfig: ellipseTextConfig,
             tableConfig: {
               name: tableName,
-              radiusX: size,
-              radiusY: size * 2,
+              radiusX: size * 2,
+              radiusY: size,
               scaleX,
               scaleY,
               rotation: angolare,

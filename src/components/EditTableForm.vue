@@ -31,7 +31,7 @@
             <v-layout>
               <v-flex xs12 sm6 md5 class="py-2">
                 <p>Dimensione</p>
-                <v-btn-toggle v-model="editedItem.size" mandatory>
+                <v-btn-toggle v-model.number="editedItem.size" mandatory>
                   <v-btn flat :value="Number(30)">Piccolo</v-btn>
                   <v-btn flat :value="Number(60)">Medio</v-btn>
                   <v-btn flat :value="Number(90)">Grande</v-btn>
@@ -167,7 +167,7 @@ export default {
     // tableTypes: [],
     angolareRules: [
       v => !!v || "Angolare is required",
-      v => v <= 360 || "Angolare must be less than 360°"
+      v => v < 360 || "Angolare must be less than 360°"
     ],
     nameRules: [v => !!v || "Nome is required"]
   }),
@@ -248,7 +248,7 @@ export default {
         size = table.tableConfig.height;
       }
       if (table.type == "ellipse") {
-        size = table.tableConfig.radiusX;
+        size = table.tableConfig.radiusY;
       }
 
       let item = {

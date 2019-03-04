@@ -127,8 +127,8 @@ export default new Vuex.Store({
       }
 
       if (payload.type == "ellipse") {
-        state.groups[indexToEdit].table.tableConfig.radiusX = payload.size;
-        state.groups[indexToEdit].table.tableConfig.radiusY = payload.size * 2;
+        state.groups[indexToEdit].table.tableConfig.radiusX = payload.size * 2;
+        state.groups[indexToEdit].table.tableConfig.radiusY = payload.size;
       }
 
       console.log("tableToEdit", tableToEdit);
@@ -139,8 +139,10 @@ export default new Vuex.Store({
       tableToEdit.type = payload.type;
       tableToEdit.tableConfig.rotation = Number(payload.angolare);
       tableToEdit.textConfig.name = payload.text;
+      tableToEdit.textConfig.rotation = Number(payload.angolare);
       tableToEdit.textConfig.number = payload.number;
-      tableToEdit.textConfig.text = payload.text + payload.number;
+      tableToEdit.textConfig.text =
+        payload.text + (payload.number == 0 ? "" : payload.number);
     },
     SELECT_GROUP(state, payload) {
       state.selectedGroup = payload;
