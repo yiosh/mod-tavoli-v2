@@ -1,5 +1,4 @@
 import axios from "axios";
-import { EventBus } from "../event-bus.js";
 
 let hostname =
   location.hostname == "localhost"
