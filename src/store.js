@@ -304,10 +304,10 @@ export default new Vuex.Store({
         .then(response => {
           // handle success
           console.log("Tables Fetched:", response.data.dati);
-          commit("GET_TABLES", response.data.dati);
+          return commit("GET_TABLES", response.data.dati);
         })
         .then(() => {
-          dispatch("getGuests", layoutId);
+          return dispatch("getGuests", layoutId);
         })
         .catch(error => {
           // handle error
@@ -349,7 +349,7 @@ export default new Vuex.Store({
       TMService.fetchLayout(layoutId)
         .then(response => {
           // handle success
-          commit("SET_LAYOUT", response.data.dati[0]);
+          return commit("SET_LAYOUT", response.data.dati[0]);
         })
         .catch(error => {
           // handle error
@@ -361,8 +361,7 @@ export default new Vuex.Store({
         .then(response => {
           // handle success
           console.log("guests", response.data.dati);
-
-          commit("GET_GUESTS", response.data.dati);
+          return commit("GET_GUESTS", response.data.dati);
         })
         .catch(error => {
           // handle error
