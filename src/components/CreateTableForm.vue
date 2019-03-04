@@ -262,8 +262,19 @@ export default {
         fill: "black",
         align: "center",
         verticalAlign: "middle",
-        offsetX: 0,
         padding: 5
+      };
+
+      let ellipseTextConfig = {
+        name: textName,
+        number,
+        text: name + (number == 0 ? "" : number),
+        fontSize: 18,
+        fontFamily: "Poppins",
+        fontStyle: "bold",
+        fill: "black",
+        verticalAlign: "middle",
+        rotation: angolare
       };
 
       let counters = {
@@ -290,22 +301,35 @@ export default {
         });
       }
 
+      let counterText = "";
+
+      if (counters.people > 0) {
+        counterText += "P" + counters.people;
+      }
+
+      if (counters.babies > 0) {
+        counterText += " B" + counters.babies;
+      }
+
+      if (counters.chairs > 0) {
+        counterText += " S" + counters.chairs;
+      }
+
+      if (counters.highchairs > 0) {
+        counterText += " XS" + counters.highchairs;
+      }
+
       let guestCounters = {
         name: guestCounterName,
-        text: `${counters.people > 0 ? "P" + counters.people : ""} ${
-          counters.babies > 0 ? "B" + counters.babies : ""
-        } ${counters.chairs > 0 ? "S" + counters.chairs : ""} ${
-          counters.highchairs > 0 ? "XS" + counters.highchairs : ""
-        }`,
+        text: counterText,
         fontSize: 12,
         fontFamily: "Poppins",
         fontStyle: "bold",
         fill: "black",
-        verticalAlign: "middle",
         align: "center",
+        verticalAlign: "middle",
         offsetY: -20,
-        x: size / 10,
-        y: size / 10
+        offsetX: 15
       };
 
       switch (type) {
@@ -366,7 +390,7 @@ export default {
           table = {
             id: id ? id : null,
             type: type,
-            textConfig,
+            textConfig: ellipseTextConfig,
             tableConfig: {
               name: tableName,
               radiusX: size,
@@ -439,10 +463,11 @@ export default {
     EventBus.$on("fetch-done", () => {
       let tablesFetched = this.$store.state.tablesFetched;
       let tablesFetchedLength = tablesFetched.length;
+      let guests = this.$store.state.guests;
+      let tableGuests = [];
       if (tablesFetchedLength > 0) {
         tablesFetched.forEach(payload => {
-          let guests = this.$store.state.guests;
-          let tableGuests = guests.filter(guest => {
+          tableGuests = guests.filter(guest => {
             return guest.table_id == payload.id;
           });
           this.createTable(
