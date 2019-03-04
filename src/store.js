@@ -113,7 +113,6 @@ export default new Vuex.Store({
       const tableToEdit = groupToEdit.table;
       if (payload.type == "circle") {
         state.groups[indexToEdit].table.tableConfig.radius = payload.size;
-        // state.groups[indexToEdit].table.tableConfig.scaleX = 2;
       }
 
       if (payload.type == "square") {
