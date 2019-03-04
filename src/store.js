@@ -78,7 +78,6 @@ export default new Vuex.Store({
           state.guests.push(guest);
         });
       }
-      EventBus.$emit("fetch-tables");
     },
     GET_TABLES(state, payload) {
       state.tablesFetched = payload;
@@ -167,26 +166,22 @@ export default new Vuex.Store({
     setLayer(state, payload) {
       state.commit("SET_LAYER", payload);
     },
-    getInitialData({ commit }, layoutId) {
-      TMService.getInitData(layoutId).then(
-        axios.spread(function(acct, perms) {
-          console.log("acct", acct);
-          console.log("perms", perms);
-
-          // Both requests are now complete
-        })
-      );
-    },
-    getTables({ commit }, layoutId) {
+    getTables({ commit, dispatch }, layoutId) {
       TMService.getTables(layoutId)
         .then(response => {
           // handle success
           console.log("Tables Fetched:", response.data.dati);
           commit("GET_TABLES", response.data.dati);
         })
+        .then(() => {
+          dispatch("getGuests", layoutId);
+        })
         .catch(error => {
           // handle error
           console.log(error);
+        })
+        .finally(() => {
+          EventBus.$emit("fetch-done");
         });
     },
     fetchTableTypes({ commit }) {

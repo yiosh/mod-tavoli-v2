@@ -15,21 +15,6 @@ const apiClient = axios.create({
   }
 });
 
-let counter = 0;
-
-apiClient.interceptors.request.use(config => {
-  counter++;
-  return config;
-});
-
-apiClient.interceptors.response.use(response => {
-  counter--;
-  if (counter == 0) {
-    EventBus.$emit("fetch-done");
-  }
-  return response;
-});
-
 export default {
   fetchLayout(layoutId) {
     return apiClient.get(

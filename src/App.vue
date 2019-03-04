@@ -37,7 +37,6 @@
 import Sidebar from "@/components/Sidebar";
 import Canvas from "@/components/Canvas";
 import { EventBus } from "./event-bus.js";
-import NProgress from "nprogress";
 
 export default {
   name: "Home",
@@ -93,19 +92,11 @@ export default {
           height: 792
         });
       }
-      // this.$store.dispatch("getInitialData", layoutId);
+
       this.$store.dispatch("setLayout", layoutId);
       this.$store.dispatch("fetchTableTypes");
       this.$store.dispatch("getTables", layoutId);
-      this.$store.dispatch("getGuests", layoutId);
-
-      // if (this.$store) {
-
-      // }
     }
-    EventBus.$on("loading-done", () => {
-      this.loading = false;
-    });
   }
 };
 </script>
