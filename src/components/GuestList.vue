@@ -226,16 +226,7 @@ export default {
     EventBus.$on("table-select", group => {
       let id = group.attrs.table.id;
       this.tableId = id;
-      // if (this.guests.length == 0) {
-      // this.$store.dispatch("getGuests", id);
-      // }
     });
-
-    // EventBus.$on("guests-fetched", () => {
-    //   this.guests = _.filter(this.$store.state.guests, guest => {
-    //     return guest.table_id == this.tableId;
-    //   });
-    // });
 
     EventBus.$on("guest-list-select", () => {
       if (this.$store.state.selectedGroup != null) {
