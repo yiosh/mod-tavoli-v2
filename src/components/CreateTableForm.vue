@@ -99,7 +99,7 @@
                   <v-btn flat :value="Number(45)">45°</v-btn>
                   <v-btn flat :value="Number(90)">90°</v-btn>
                   <v-btn flat :value="Number(180)">180°</v-btn>
-                  <v-btn flat :value="customAngolareVal">Costum</v-btn>
+                  <v-btn flat :value="customAngolareVal">Custom</v-btn>
                 </v-btn-toggle>
               </v-flex>
               <v-flex xs12 sm6 md2 class="py-2">
@@ -164,7 +164,7 @@ export default {
       text: "",
       number: 0
     },
-    nameRules: [v => !!v || "Nome is required"]
+    nameRules: [v => !!v || "Inserisci nome tavolo per procedere"]
   }),
   computed: {
     groupsLength() {
