@@ -18,51 +18,11 @@ export const mutations = {
   },
   ADD_GUEST(state, newGuest) {
     state.guests.push(newGuest);
-    // let groupIndex = rootState.table.groups.findIndex(group => {
-    //   return group.table.id == newGuest.table_id;
-    // });
-
-    // let counters = {
-    //   people: 0,
-    //   babies: 0,
-    //   chairs: 0,
-    //   highchairs: 0,
-    //   text: ""
-    // };
-
-    // let guests = state.guests.filter(guest => {
-    //   return guest.table_id == newGuest.table_id;
-    // });
-
-    // guests.forEach(guest => {
-    //   if (Number(guest.peoples) > 0) {
-    //     counters.people += Number(guest.peoples);
-    //   }
-    //   if (Number(guest.baby) > 0) {
-    //     counters.babies += Number(guest.baby);
-    //   }
-    //   if (Number(guest.chairs_only) > 0) {
-    //     counters.chairs += Number(guest.chairs_only);
-    //   }
-    //   if (Number(guest.high_chair) > 0) {
-    //     counters.highchairs += Number(guest.high_chair);
-    //   }
-    // });
-
-    // counters.text = `${counters.people > 0 ? "P" + counters.people : ""} ${
-    //   counters.babies > 0 ? "B" + counters.babies : ""
-    // } ${counters.chairs > 0 ? "S" + counters.chairs : ""} ${
-    //   counters.highchairs > 0 ? "XS" + counters.highchairs : ""
-    // }`;
-
-    // rootState.table.groups[groupIndex].guestCounters.text = counters.text;
-    // console.log("newtext", state.groups[groupIndex].guestCounters.text);
   },
   UPDATE_GUEST(state, updatedGuest) {
     let index = state.guests.findIndex(guest => {
       return guest.id == updatedGuest.id;
     });
-
     Object.assign(state.guests[index], updatedGuest);
   },
   DELETE_GUEST(state, guest) {
@@ -79,7 +39,6 @@ export const actions = {
     TMService.getGuests(layoutId)
       .then(response => {
         // handle success
-        console.log("guests", response.data.dati);
         return commit("GET_GUESTS", response.data.dati);
       })
       .catch(error => {
