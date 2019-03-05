@@ -166,10 +166,10 @@ export default {
     },
     // tableTypes: [],
     angolareRules: [
-      v => !!v || "Angolare is required",
-      v => v < 360 || "Angolare must be less than 360°"
+      v => !!v || "Angolare è richiesto ",
+      v => v < 360 || "Angolare deve essere inferiore a 360°"
     ],
-    nameRules: [v => !!v || "Nome is required"]
+    nameRules: [v => !!v || "Nome è richiesto"]
   }),
   computed: {
     groupsLength() {
