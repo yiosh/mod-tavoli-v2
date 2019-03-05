@@ -277,14 +277,14 @@ export default {
       }
 
       let newItem = {
-        id: this.editedItem.id,
-        type: this.editedItem.type,
+        tableId: this.editedItem.id,
+        typeId: this.tableTypeDeparser(this.editedItem.type),
         size: this.editedItem.size,
         scaleX: this.editedItem.scaleX,
         scaleY: this.editedItem.scaleY,
         angolare,
-        text: this.editedItem.text,
-        number: this.editedItem.number
+        tablename: this.editedItem.text,
+        tableNumber: this.editedItem.number
       };
 
       if (
@@ -294,26 +294,26 @@ export default {
         this.$store.state.stage.draw();
         this.defaultItem = Object.assign({}, newItem);
 
-        axios
-          .get(
-            `https://${
-              this.$store.state.hostname
-            }/fl_api/tables-v1/?update_table&token=1&layout_id=${
-              this.$store.state.layout.id
-            }&table_id=${this.editedItem.id}&type_id=${this.tableTypeDeparser(
-              this.editedItem.type
-            )}&table_name=${this.editedItem.text}&table_number=${
-              this.editedItem.number
-            }&size=${this.editedItem.size}&scale_x=${
-              this.editedItem.scaleX
-            }&scale_y=${this.editedItem.scaleY}&angolare=${newItem.angolare}`
-          )
-          .then(function(response) {
-            console.log("Response", response);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+        // axios
+        //   .get(
+        //     `https://${
+        //       this.$store.state.hostname
+        //     }/fl_api/tables-v1/?update_table&token=1&layout_id=${
+        //       this.$store.state.layout.id
+        //     }&table_id=${this.editedItem.id}&type_id=${this.tableTypeDeparser(
+        //       this.editedItem.type
+        //     )}&table_name=${this.editedItem.text}&table_number=${
+        //       this.editedItem.number
+        //     }&size=${this.editedItem.size}&scale_x=${
+        //       this.editedItem.scaleX
+        //     }&scale_y=${this.editedItem.scaleY}&angolare=${newItem.angolare}`
+        //   )
+        //   .then(function(response) {
+        //     console.log("Response", response);
+        //   })
+        //   .catch(function(error) {
+        //     console.log(error);
+        //   });
         // this.$store.state.layer.draw();
       }
       this.dialog = false;
@@ -323,22 +323,7 @@ export default {
       console.log("Confirm", answer);
       if (confirm) {
         this.$store.dispatch("deleteTable", this.editedItem.id);
-        axios
-          .get(
-            `https://${
-              this.$store.state.hostname
-            }/fl_api/tables-v1/?delete_table&token=1&layout_id=${
-              this.$store.state.layout.id
-            }&table_id=${this.editedItem.id}`
-          )
-          .then(function(response) {
-            console.log("Response", response);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
       }
-
       this.dialog = false;
     }
   },

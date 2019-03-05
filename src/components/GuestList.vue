@@ -41,25 +41,29 @@
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
-                          v-model="editedItem.peoples"
+                          v-model.number="editedItem.peoples"
+                          :rules="numberRules"
                           label="Persone"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
-                          v-model="editedItem.baby"
+                          v-model.number="editedItem.baby"
+                          :rules="numberRules"
                           label="Bambini"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
-                          v-model="editedItem.chairs_only"
+                          v-model.number="editedItem.chairs_only"
+                          :rules="numberRules"
                           label="Sedie"
                         ></v-text-field>
                       </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
-                          v-model="editedItem.high_chair"
+                          v-model.number="editedItem.high_chair"
+                          :rules="numberRules"
                           label="Seggiolone"
                         ></v-text-field>
                       </v-flex>
@@ -85,7 +89,7 @@
           </v-toolbar>
           <v-data-table
             :headers="headers"
-            :items="guests"
+            :items="guests(this.tableId)"
             rows-per-page-text="Righe per pagina"
             :rows-per-page-items="[5, 10, 25, { text: 'Tutti', value: -1 }]"
             no-data-text="Non ci sono ospiti in questo tavolo"
@@ -105,9 +109,6 @@
                 <v-icon small @click="deleteGuest(props.item)">delete</v-icon>
               </td>
             </template>
-            <!-- <template slot="no-data"
-              >Non ci sono ospiti in questo tavolo</template
-            >-->
           </v-data-table>
         </v-card-text>
         <v-divider></v-divider>
@@ -118,24 +119,19 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="snackbar" top color="warning" :timeout="6000"
-      >Devi selezionare un tavolo per aprire la sua lista degli ospiti
-      <v-btn dark flat @click="snackbar = false">Chiudi</v-btn>
-    </v-snackbar>
   </v-layout>
 </template>
 
 <script>
 import { EventBus } from "../event-bus.js";
-import _ from "lodash";
-import TMService from "@/services/TMService.js";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "GuestList",
   data() {
     return {
       tableId: null,
-      snackbar: false,
+      tableName: "",
       dialog: false,
       guestDialog: false,
       dialogm1: "",
@@ -169,20 +165,31 @@ export default {
         chairs_only: 0,
         high_chair: 0,
         note_intolleranze: ""
-      }
+      },
+      numberRules: [
+        v => typeof v === "number" || "Per favore inserisci un numero"
+      ]
     };
   },
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Crea Nuovo Ospite" : "Modifica Ospite";
     },
-    guests() {
-      return this.$store.getters.guests(this.tableId);
-    }
+    // guests() {
+    //   return this.$store.getters.guests(this.tableId);
+    // },
+    ...mapState(["guest"]),
+    ...mapGetters({ guests: "guest/guests" })
   },
   methods: {
     editItem(item) {
-      this.editedIndex = this.guests.indexOf(item);
+      console.log("item", item);
+      item.peoples = Number(item.peoples);
+      item.baby = Number(item.baby);
+      item.chairs_only = Number(item.chairs_only);
+      item.high_chair = Number(item.high_chair);
+
+      this.editedIndex = this.guest.guests.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.guestDialog = true;
     },
@@ -191,7 +198,7 @@ export default {
         `Sei sicuro di voler eliminare a ${guest.nome} ${guest.cognome}?`
       ) &&
         // Delete Guest
-        this.$store.dispatch("deleteGuest", guest);
+        this.$store.dispatch("guest/deleteGuest", guest);
     },
     close() {
       this.guestDialog = false;
@@ -203,14 +210,13 @@ export default {
     save() {
       if (this.editedIndex > -1) {
         // Update existing guest
-        // let itemToEdit = this.editedItem;
         let guest = this.editedItem;
-        this.$store.dispatch("updateGuest", guest);
+        this.$store.dispatch("guest/updateGuest", guest);
       } else {
         // Create a New Guest
         let guest = this.editedItem;
         const tableId = this.tableId;
-        this.$store.dispatch("addGuest", { tableId, guest });
+        this.$store.dispatch("guest/addGuest", { tableId, guest });
       }
       this.close();
     }
@@ -226,7 +232,12 @@ export default {
       if (this.$store.state.selectedGroup != null) {
         this.dialog = true;
       } else {
-        this.snackbar = true;
+        const notification = {
+          type: "warning",
+          message:
+            "Devi selezionare un tavolo per aprire la sua lista degli ospiti"
+        };
+        this.$store.dispatch("notification/add", notification, { root: true });
       }
     });
   }

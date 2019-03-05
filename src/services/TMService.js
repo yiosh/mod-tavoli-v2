@@ -28,6 +28,41 @@ export default {
       `/fl_api/tables-v1/?get_tables&token=1&board_id=${layoutId}`
     );
   },
+  addTable({
+    layoutId,
+    typeId,
+    tableName,
+    tableNumber,
+    tableGroup,
+    size,
+    x,
+    y,
+    angolare
+  }) {
+    return apiClient.get(
+      `/fl_api/tables-v1/?insert_table&token=1&layout_id=${layoutId}&type_id=${typeId}&table_name=${tableName}&table_number=${tableNumber}&table_group=${tableGroup}&size=${size}&x=${x}&y=${y}&angolare=${angolare}`
+    );
+  },
+  updateTable({
+    layoutId,
+    tableId,
+    typeId,
+    tableName,
+    tableNumber,
+    size,
+    scaleX,
+    scaleY,
+    angolare
+  }) {
+    return apiClient.get(
+      `/fl_api/tables-v1/?update_table&token=1&layout_id=${layoutId}&table_id=${tableId}&type_id=${typeId}&table_name=${tableName}&table_number=${tableNumber}&size=${size}&scale_x=${scaleX}&scale_y=${scaleY}&angolare=${angolare}`
+    );
+  },
+  deleteTable({ layoutId, tableId }) {
+    return apiClient.get(
+      `/fl_api/tables-v1/?delete_table&token=1&layout_id=${layoutId}&table_id=${tableId}`
+    );
+  },
   getGuests(layoutId) {
     return apiClient.get(
       `/fl_api/tables-v1/?get_guests&token=1&layout_id=${layoutId}`

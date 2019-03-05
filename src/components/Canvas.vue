@@ -19,7 +19,7 @@
           :ref="group.name"
           @click="tableSelect(group.name)"
           @dragend="moveTable"
-          v-for="group in groups"
+          v-for="group in table.groups"
           :config="group"
           :key="group.name"
         >
@@ -64,6 +64,7 @@
 import axios from "axios";
 import Toolbar from "./Toolbar";
 import { EventBus } from "../event-bus.js";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "Canvas",
@@ -83,30 +84,33 @@ export default {
     stageConfig() {
       return this.$store.state.configKonva;
     },
-    groups() {
-      return this.$store.state.groups;
-    },
-    guestTotals() {
-      let guestTotals = this.$store.getters.guestTotals;
-      let totalText = "TOTALE:\n";
-      totalText += "Persone: " + guestTotals.people + ",";
-      totalText += " Bambini: " + guestTotals.babies + ",";
-      totalText += " Sedie: " + guestTotals.chairs + ",";
-      totalText += " Seggiolone: " + guestTotals.highchairs;
 
-      let total = {
-        name: "totaleCounter",
-        text: totalText,
-        fontSize: 18,
-        fontFamily: "Poppins",
-        fontStyle: "bold",
-        fill: "black",
-        width: 600,
-        x: 14,
-        y: 750
-      };
-      return total;
-    }
+    // groups() {
+    //   return this.$store.state.groups;
+    // },
+    // guestTotals() {
+    //   let guestTotals = this.$store.getters.guestTotals;
+    //   let totalText = "TOTALE:\n";
+    //   totalText += "Persone: " + guestTotals.people + ",";
+    //   totalText += " Bambini: " + guestTotals.babies + ",";
+    //   totalText += " Sedie: " + guestTotals.chairs + ",";
+    //   totalText += " Seggiolone: " + guestTotals.highchairs;
+
+    //   let total = {
+    //     name: "totaleCounter",
+    //     text: totalText,
+    //     fontSize: 18,
+    //     fontFamily: "Poppins",
+    //     fontStyle: "bold",
+    //     fill: "black",
+    //     width: 600,
+    //     x: 14,
+    //     y: 750
+    //   };
+    //   return total;
+    // },
+    ...mapState(["table"]),
+    ...mapGetters({ guestTotals: "guest/guestTotals" })
   },
   methods: {
     log(e) {

@@ -21,10 +21,6 @@
     </v-toolbar>
     <CreateTableForm></CreateTableForm>
     <EditTableForm></EditTableForm>
-    <v-snackbar v-model="snackbar" top color="warning" :timeout="6000">
-      {{ snackbarMessage }}
-      <v-btn dark flat @click="snackbar = false">Close</v-btn>
-    </v-snackbar>
   </v-layout>
 </template>
 
@@ -40,9 +36,7 @@ export default {
     EditTableForm
   },
   data: () => ({
-    selectedGroup: null,
-    snackbar: false,
-    snackbarMessage: null
+    selectedGroup: null
   }),
   computed: {
     layoutName() {
@@ -59,8 +53,13 @@ export default {
           if (this.selectedGroup) {
             EventBus.$emit("edit-table-select");
           } else {
-            this.snackbarMessage = "Please select a table to edit";
-            this.snackbar = true;
+            const notification = {
+              type: "warning",
+              message: "Seleziona una tabella da modificare"
+            };
+            this.$store.dispatch("notification/add", notification, {
+              root: true
+            });
           }
           break;
       }

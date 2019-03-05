@@ -20,7 +20,7 @@
               1,
               1,
               createTableForm.type,
-              groupsLength,
+              table.getters.groupsLength,
               100,
               100,
               Number(createTableForm.angolare),
@@ -35,7 +35,7 @@
                 <p>Tipo</p>
                 <v-btn-toggle v-model="createTableForm.type" mandatory>
                   <v-btn
-                    v-for="tableType in tableTypes"
+                    v-for="tableType in table.tableTypes"
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
@@ -147,7 +147,7 @@
 
 <script>
 import { EventBus } from "../event-bus.js";
-import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   name: "CreateTableForm",
@@ -167,12 +167,12 @@ export default {
     nameRules: [v => !!v || "Inserisci nome tavolo per procedere"]
   }),
   computed: {
-    groupsLength() {
-      return this.$store.getters.groupsLength;
-    },
-    tableTypes() {
-      return this.$store.state.tableTypes;
-    },
+    // groupsLength() {
+    //   return this.table.getters.groupsLength;
+    // },
+    // tableTypes() {
+    //   return this.$store.state.tableTypes;
+    // },
     customAngolareVal() {
       return this.createTableForm.angolare == 0 ||
         this.createTableForm.angolare == 45 ||
@@ -180,7 +180,8 @@ export default {
         this.createTableForm.angolare == 180
         ? 91
         : this.createTableForm.angolare;
-    }
+    },
+    ...mapState(["table", "guest"])
   },
   methods: {
     // Parses from table id into Konva shape
@@ -238,7 +239,7 @@ export default {
       x = 100,
       y = 100,
       angolare = 0,
-      n = false,
+      newTable = false,
       tableGuests = []
     ) {
       let uID =
@@ -262,6 +263,7 @@ export default {
         fill: "black",
         align: "center",
         verticalAlign: "middle",
+        rotation: angolare,
         padding: 5
       };
 
@@ -279,6 +281,14 @@ export default {
         offsetX: size / 4
       };
 
+      let offsetX = -5;
+      let offsetY = -30;
+
+      if (type == "ellipse") {
+        offsetY = (size / 4) * -1;
+        offsetX = (size / 4) * 3;
+      }
+
       let guestCounters = {
         name: guestCounterName,
         text: "",
@@ -289,8 +299,8 @@ export default {
         align: "center",
         verticalAlign: "middle",
         rotation: angolare,
-        offsetY: (size / 4) * -1,
-        offsetX: (size / 4) * 3,
+        offsetY,
+        offsetX,
         counters: {
           people: 0,
           babies: 0,
@@ -421,49 +431,36 @@ export default {
       };
 
       const details = {
-        layout_id: this.$store.state.layout.id,
-        type_id: this.tableTypeDeparser(type),
-        table_name: name,
-        table_number: number,
-        table_group: tableGroup ? tableGroup : 0,
+        layoutId: this.$store.state.layout.id,
+        typeId: this.tableTypeDeparser(type),
+        tableName: name,
+        tableNumber: number,
+        tableGroup: tableGroup ? tableGroup : 0,
+        size,
         x,
         y,
         angolare
       };
 
-      if (n) {
-        axios
-          .get(
-            `https://${
-              this.$store.state.hostname
-            }/fl_api/tables-v1/?insert_table&token=1&layout_id=${
-              details.layout_id
-            }&type_id=${details.type_id}&table_name=${
-              details.table_name
-            }&table_number=${details.table_number}&table_group=${
-              details.table_group
-            }&size=${size}&x=${details.x}&y=${details.y}&angolare=${
-              details.angolare
-            }`
-          )
-          .then(function(response) {
-            group.table.id = response.data.id;
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+      let payload = {
+        isNew: false,
+        group,
+        details: null
+      };
+
+      if (newTable) {
+        payload.isNew = true;
+        payload.details = details;
       }
-      // Add new group to the store
-      this.$store.dispatch("addTable", group);
+      this.$store.dispatch("table/addTable", payload);
       this.dialog = false;
-    },
-    getTableTypes() {}
+    }
   },
   created() {
     EventBus.$on("fetch-done", () => {
-      let tablesFetched = this.$store.state.tablesFetched;
+      let tablesFetched = this.table.tablesFetched;
       let tablesFetchedLength = tablesFetched.length;
-      let guests = this.$store.state.guests;
+      let guests = this.guest.guests;
       let tableGuests = [];
       if (tablesFetchedLength > 0) {
         tablesFetched.forEach(payload => {

@@ -104,8 +104,8 @@ export default {
       }
 
       this.$store.dispatch("setLayout", layoutId);
-      this.$store.dispatch("fetchTableTypes");
-      this.$store.dispatch("getTables", layoutId);
+      this.$store.dispatch("table/fetchTableTypes", null, { root: true });
+      this.$store.dispatch("table/getTables", layoutId, { root: true });
     }
   }
 };
