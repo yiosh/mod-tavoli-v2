@@ -3,7 +3,9 @@
     <v-dialog v-model="dialog">
       <v-card>
         <v-toolbar flat dark color="#424242">
-          <v-toolbar-title>Elenco degli Ospiti</v-toolbar-title>
+          <v-toolbar-title
+            >Elenco degli Ospiti - {{ tableName }}</v-toolbar-title
+          >
           <v-spacer></v-spacer>
 
           <v-btn icon @click="dialog = false">
@@ -215,8 +217,9 @@ export default {
   },
   created() {
     EventBus.$on("table-select", group => {
-      let id = group.attrs.table.id;
-      this.tableId = id;
+      let table = group.attrs.table;
+      this.tableId = table.id;
+      this.tableName = table.textConfig.name;
     });
 
     EventBus.$on("guest-list-select", () => {
