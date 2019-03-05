@@ -30,6 +30,11 @@
       </div>
     </v-content>
     <Sidebar v-show="loading == false"></Sidebar>
+    <BaseNotification
+      v-for="notification in notifications"
+      :notification="notification"
+      :key="notification.id"
+    ></BaseNotification>
   </v-app>
 </template>
 
@@ -37,12 +42,15 @@
 import Sidebar from "@/components/Sidebar";
 import Canvas from "@/components/Canvas";
 import { EventBus } from "./event-bus.js";
+import { mapState } from "vuex";
+import BaseNotification from "@/components/baseComponents/BaseNotification";
 
 export default {
   name: "Home",
   components: {
     Sidebar,
-    Canvas
+    Canvas,
+    BaseNotification
   },
   data: () => ({
     title: null
@@ -57,7 +65,8 @@ export default {
     },
     loading() {
       return this.$store.state.loading;
-    }
+    },
+    ...mapState("notification", ["notifications"])
   },
   methods: {
     handleDrawer() {
@@ -81,6 +90,7 @@ export default {
       : "Table Manager V2";
   },
   created() {
+    this.$store.dispatch("startProgress");
     const layoutId = this.getQueryVariable("layout_id");
     const orientation = this.$store.state.layout.orientation;
     if (!layoutId) {
