@@ -39,6 +39,15 @@
                           label="Cognome"
                         ></v-text-field>
                       </v-flex>
+                      <v-flex xs12>
+                        <v-select
+                          item-text="text"
+                          item-value="value"
+                          v-model.number="editedItem.guest_type"
+                          :items="guestTypes"
+                          label="Tipo Ospite"
+                        ></v-select>
+                      </v-flex>
                       <v-flex xs12 sm6 md3>
                         <v-text-field
                           v-model.number="editedItem.peoples"
@@ -72,15 +81,6 @@
                           v-model="editedItem.note_intolleranze"
                           label="Nota"
                         ></v-text-field>
-                      </v-flex>
-                      <v-flex xs12>
-                        <v-select
-                          item-text="text"
-                          item-value="value"
-                          v-model.number="editedItem.guest_type"
-                          :items="guestTypes"
-                          label="Tipo Ospite"
-                        ></v-select>
                       </v-flex>
                     </v-layout>
                   </v-container>
