@@ -84,9 +84,10 @@ export const actions = {
       .then(response => {
         // handle success
         console.log("Tables Fetched:", response.data.dati);
-        return commit("GET_TABLES", response.data.dati);
+        commit("GET_TABLES", response.data.dati);
+        return layoutId;
       })
-      .then(() => {
+      .then(layoutId => {
         dispatch("guest/getGuests", layoutId, { root: true });
       })
       .catch(error => {

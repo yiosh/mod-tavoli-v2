@@ -70,25 +70,29 @@ export default {
   },
   addGuest(layoutId, tableId, guest) {
     return apiClient.get(
-      `/fl_api/tables-v1/?insert_guest&token=1&layout_id=${layoutId}&table_id=${tableId}&cognome=${
-        guest.cognome
-      }&peoples=${guest.peoples}&nome=${guest.nome}&baby=${
-        guest.baby
-      }&chairs_only=${guest.chairs_only}&highchair=${
-        guest.high_chair
-      }&note_intolleranze=${guest.note_intolleranze}`
+      `/fl_api/tables-v1/?insert_guest&token=1&layout_id=${layoutId}&guest_type=${
+        guest.guest_type
+      }&table_id=${tableId}&cognome=${guest.cognome}&peoples=${
+        guest.peoples
+      }&nome=${guest.nome}&baby=${guest.baby}&chairs_only=${
+        guest.chairs_only
+      }&highchair=${guest.high_chair}&note_intolleranze=${
+        guest.note_intolleranze
+      }`
     );
   },
   updateGuest(guest) {
     console.log("guest", guest);
     return apiClient.get(
-      `/fl_api/tables-v1/?update_guest&token=1&guest_id=${guest.id}&cognome=${
-        guest.cognome
-      }&peoples=${guest.peoples}&nome=${guest.nome}&baby=${
-        guest.baby
-      }&chairs_only=${guest.chairs_only}&highchair=${
-        guest.high_chair
-      }&note_intolleranze=${guest.note_intolleranze}`
+      `/fl_api/tables-v1/?update_guest&token=1&guest_id=${
+        guest.id
+      }&guest_type=${guest.guest_type}&cognome=${guest.cognome}&peoples=${
+        guest.peoples
+      }&nome=${guest.nome}&baby=${guest.baby}&chairs_only=${
+        guest.chairs_only
+      }&highchair=${guest.high_chair}&note_intolleranze=${
+        guest.note_intolleranze
+      }`
     );
   },
   deleteGuest(guestId) {

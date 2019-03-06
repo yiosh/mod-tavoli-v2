@@ -82,6 +82,18 @@ export default new Vuex.Store({
       TMService.fetchLayout(layoutId)
         .then(response => {
           // handle success
+          // const notification = {
+          //   type: "error",
+          //   multiLine: true,
+          //   message:
+          //     "Si è verificato un problema durante il recupero del layout: " +
+          //     error.message
+          // };
+          // dispatch("notification/add", notification, { root: true });
+          // const layout =
+          // if (condition) {
+
+          // }
           return commit("SET_LAYOUT", response.data.dati[0]);
         })
         .catch(error => {

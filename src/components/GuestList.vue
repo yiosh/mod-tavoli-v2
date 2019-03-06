@@ -73,6 +73,15 @@
                           label="Nota"
                         ></v-text-field>
                       </v-flex>
+                      <v-flex xs12>
+                        <v-select
+                          item-text="text"
+                          item-value="value"
+                          v-model="editedItem.guest_type"
+                          :items="guestTypes"
+                          label="Tipo Ospite"
+                        ></v-select>
+                      </v-flex>
                     </v-layout>
                   </v-container>
                 </v-card-text>
@@ -135,6 +144,28 @@ export default {
       dialog: false,
       guestDialog: false,
       dialogm1: "",
+      guestTypes: [
+        {
+          text: "Organizzatore",
+          value: "1"
+        },
+        {
+          text: "Festeggiato",
+          value: "2"
+        },
+        {
+          text: "Ospite",
+          value: "3"
+        },
+        {
+          text: "Ospite VIP",
+          value: "4"
+        },
+        {
+          text: "Operatore",
+          value: "5"
+        }
+      ],
       headers: [
         { text: "Nome", value: "nome" },
         { text: "Cognome", value: "cognome" },
@@ -154,7 +185,8 @@ export default {
         baby: 0,
         chairs_only: 0,
         high_chair: 0,
-        note_intolleranze: ""
+        note_intolleranze: "",
+        guest_type: 3
       },
       defaultItem: {
         id: null,
@@ -164,7 +196,8 @@ export default {
         baby: 0,
         chairs_only: 0,
         high_chair: 0,
-        note_intolleranze: ""
+        note_intolleranze: "",
+        guest_type: 3
       },
       numberRules: [
         v => typeof v === "number" || "Per favore inserisci un numero"
