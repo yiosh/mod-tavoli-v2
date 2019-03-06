@@ -77,7 +77,7 @@
                         <v-select
                           item-text="text"
                           item-value="value"
-                          v-model="editedItem.guest_type"
+                          v-model.number="editedItem.guest_type"
                           :items="guestTypes"
                           label="Tipo Ospite"
                         ></v-select>
@@ -147,23 +147,23 @@ export default {
       guestTypes: [
         {
           text: "Organizzatore",
-          value: "1"
+          value: 1
         },
         {
           text: "Festeggiato",
-          value: "2"
+          value: 2
         },
         {
           text: "Ospite",
-          value: "3"
+          value: 3
         },
         {
           text: "Ospite VIP",
-          value: "4"
+          value: 4
         },
         {
           text: "Operatore",
-          value: "5"
+          value: 5
         }
       ],
       headers: [
@@ -221,6 +221,7 @@ export default {
       item.baby = Number(item.baby);
       item.chairs_only = Number(item.chairs_only);
       item.high_chair = Number(item.high_chair);
+      item.guest_type = Number(item.guest_type);
 
       this.editedIndex = this.guest.guests.indexOf(item);
       this.editedItem = Object.assign({}, item);
