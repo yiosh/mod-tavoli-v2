@@ -4,8 +4,8 @@
     :value="notificationStatus"
     :color="notificationTypeClass"
     :multi-line="notification.multiLine"
-    bottom
-    right
+    top
+    center
     absolute
   >
     {{ notification.message }}
