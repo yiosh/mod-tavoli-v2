@@ -18,7 +18,7 @@
                 <p>Tipo</p>
                 <v-btn-toggle v-model="editedItem.type" mandatory>
                   <v-btn
-                    v-for="tableType in tableTypes"
+                    v-for="tableType in table.tableTypes"
                     flat
                     :value="tableTypeParser(tableType.id)"
                     :key="tableType.id"
@@ -135,7 +135,7 @@
 
 <script>
 import { EventBus } from "../event-bus.js";
-import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   name: "EditTableForm",
@@ -185,7 +185,8 @@ export default {
         this.editedItem.angolare == 180
         ? 91
         : this.editedItem.angolare;
-    }
+    },
+    ...mapState(["table"])
   },
   methods: {
     enforceMandatory() {
@@ -220,19 +221,19 @@ export default {
       let id;
       switch (type) {
         case "circle":
-          id = "2";
+          id = 2;
           break;
 
         case "square":
-          id = "3";
+          id = 3;
           break;
 
         case "rectangle":
-          id = "4";
+          id = 4;
           break;
 
         case "ellipse":
-          id = "5";
+          id = 5;
           break;
       }
       return id;
@@ -277,20 +278,21 @@ export default {
       }
 
       let newItem = {
-        tableId: this.editedItem.id,
+        layoutId: this.$store.state.layout.id,
+        id: this.editedItem.id,
         typeId: this.tableTypeDeparser(this.editedItem.type),
         size: this.editedItem.size,
         scaleX: this.editedItem.scaleX,
         scaleY: this.editedItem.scaleY,
         angolare,
-        tablename: this.editedItem.text,
+        tableName: this.editedItem.text,
         tableNumber: this.editedItem.number
       };
 
       if (
         JSON.stringify(this.editedItem) !== JSON.stringify(this.defaultItem)
       ) {
-        this.$store.dispatch("updateTable", newItem);
+        this.$store.dispatch("table/updateTable", newItem);
         this.$store.state.stage.draw();
         this.defaultItem = Object.assign({}, newItem);
 
@@ -322,7 +324,11 @@ export default {
       let answer = confirm("You sure you want to remove this table?");
       console.log("Confirm", answer);
       if (confirm) {
-        this.$store.dispatch("deleteTable", this.editedItem.id);
+        let item = {
+          layoutId: this.$store.state.layout.id,
+          id: this.editedItem.id
+        };
+        this.$store.dispatch("table/deleteTable", item);
       }
       this.dialog = false;
     }

@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import _ from "lodash";
 import TMService from "@/services/TMService";
 import NProgress from "nprogress";
 import * as table from "@/store/modules/table.js";

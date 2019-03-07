@@ -20,7 +20,7 @@
               1,
               1,
               createTableForm.type,
-              table.getters.groupsLength,
+              groupsLength,
               100,
               100,
               Number(createTableForm.angolare),
@@ -148,6 +148,7 @@
 <script>
 import { EventBus } from "../event-bus.js";
 import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CreateTableForm",
@@ -181,7 +182,8 @@ export default {
         ? 91
         : this.createTableForm.angolare;
     },
-    ...mapState(["table", "guest"])
+    ...mapState(["table", "guest"]),
+    ...mapGetters({ groupsLength: "table/groupsLength" })
   },
   methods: {
     // Parses from table id into Konva shape
@@ -456,6 +458,7 @@ export default {
       this.dialog = false;
     }
   },
+  mounted() {},
   created() {
     EventBus.$on("fetch-done", () => {
       let tablesFetched = this.table.tablesFetched;

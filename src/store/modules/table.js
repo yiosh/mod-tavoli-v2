@@ -63,18 +63,37 @@ export const mutations = {
       state.groups[indexToEdit].table.tableConfig.radiusY = payload.size;
     }
 
+    let type;
+    switch (payload.typeId) {
+      case 2:
+        type = "circle";
+        break;
+
+      case 3:
+        type = "square";
+        break;
+
+      case 4:
+        type = "rectangle";
+        break;
+
+      case 5:
+        type = "ellipse";
+        break;
+    }
+
     console.log("tableToEdit", tableToEdit);
     console.log("tableConfig", state.groups[indexToEdit].table.tableConfig);
 
     tableToEdit.tableConfig.scaleX = payload.scaleX;
     tableToEdit.tableConfig.scaleY = payload.scaleY;
-    tableToEdit.type = payload.type;
+    tableToEdit.type = type;
     tableToEdit.tableConfig.rotation = Number(payload.angolare);
-    tableToEdit.textConfig.name = payload.text;
+    tableToEdit.textConfig.name = payload.tableName;
     tableToEdit.textConfig.rotation = Number(payload.angolare);
-    tableToEdit.textConfig.number = payload.number;
+    tableToEdit.textConfig.number = payload.tableNumber;
     tableToEdit.textConfig.text =
-      payload.text + (payload.number == 0 ? "" : payload.number);
+      payload.tableName + (payload.tableNumber == 0 ? "" : payload.tableNumber);
   }
 };
 
@@ -152,11 +171,10 @@ export const actions = {
       dispatch("endProgress", null, { root: true });
     }
   },
-  deleteTable({ state, commit, dispatch }, tableId) {
-    const layoutId = state.layout.id;
-    TMService.deleteTable({ layoutId, tableId })
+  deleteTable({ state, commit, dispatch }, table) {
+    TMService.deleteTable({ layoutId: table.layoutId, tableId: table.id })
       .then(() => {
-        commit("DELETE_TABLE", tableId);
+        commit("DELETE_TABLE", table.id);
         const notification = {
           type: "success",
           message: "Tavolo rimosso!"
@@ -177,6 +195,7 @@ export const actions = {
   updateTable({ commit, dispatch }, payload) {
     TMService.updateTable(payload)
       .then(() => {
+        console.log("payload", payload);
         commit("UPDATE_TABLE", payload);
         const notification = {
           type: "success",

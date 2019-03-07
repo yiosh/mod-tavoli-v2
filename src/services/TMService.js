@@ -45,7 +45,7 @@ export default {
   },
   updateTable({
     layoutId,
-    tableId,
+    id,
     typeId,
     tableName,
     tableNumber,
@@ -55,7 +55,7 @@ export default {
     angolare
   }) {
     return apiClient.get(
-      `/fl_api/tables-v1/?update_table&token=1&layout_id=${layoutId}&table_id=${tableId}&type_id=${typeId}&table_name=${tableName}&table_number=${tableNumber}&size=${size}&scale_x=${scaleX}&scale_y=${scaleY}&angolare=${angolare}`
+      `/fl_api/tables-v1/?update_table&token=1&layout_id=${layoutId}&table_id=${id}&type_id=${typeId}&table_name=${tableName}&table_number=${tableNumber}&size=${size}&scale_x=${scaleX}&scale_y=${scaleY}&angolare=${angolare}`
     );
   },
   deleteTable({ layoutId, tableId }) {
