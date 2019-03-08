@@ -14,6 +14,32 @@
         <v-form v-model="valid" @submit.prevent="save">
           <v-container>
             <v-layout>
+              <v-flex xs12 md6>
+                <v-text-field
+                  v-model="editedItem.text"
+                  label="Nome"
+                  required
+                ></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 md6>
+                <v-text-field
+                  v-model="editedItem.number"
+                  label="Numero"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
+              <v-flex xs12>
+                <v-text-field
+                  v-model="editedItem.nomeCliente"
+                  label="Nome Tavolo Cliente"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
               <v-flex xs12 sm6 class="py-2">
                 <p>Tipo</p>
                 <v-btn-toggle v-model="editedItem.type" mandatory>
@@ -81,37 +107,12 @@
                   <v-btn flat :value="customAngolareVal">Custom</v-btn>
                 </v-btn-toggle>
               </v-flex>
-              <!-- <v-flex xs12 sm6 md4 class="py-2">
-                <p></p>
-                <v-slider
-                  min="0"
-                  max="360"
-                  v-model="editedItem.angolare"
-                ></v-slider>
-              </v-flex>-->
+
               <v-flex xs12 sm6 md2 class="py-2" mandatory>
                 <v-text-field
                   suffix="°"
                   type="number"
                   v-model="editedItem.angolare"
-                ></v-text-field>
-              </v-flex>
-            </v-layout>
-
-            <v-layout>
-              <v-flex xs12 md6>
-                <v-text-field
-                  :rules="nameRules"
-                  v-model="editedItem.text"
-                  label="Nome"
-                  required
-                ></v-text-field>
-              </v-flex>
-
-              <v-flex xs12 md6>
-                <v-text-field
-                  v-model="editedItem.number"
-                  label="Numero"
                 ></v-text-field>
               </v-flex>
             </v-layout>
@@ -152,7 +153,8 @@ export default {
       scaleY: "1",
       angolare: 0,
       text: "",
-      number: ""
+      number: "",
+      nomeCliente: ""
     },
     defaultItem: {
       id: "",
@@ -162,7 +164,8 @@ export default {
       scaleY: "1",
       angolare: 0,
       text: "",
-      number: ""
+      number: "",
+      nomeCliente: ""
     },
     // tableTypes: [],
     angolareRules: [
@@ -260,7 +263,8 @@ export default {
         scaleY: parseFloat(table.tableConfig.scaleY),
         angolare: Number(table.tableConfig.rotation),
         text: table.textConfig.name,
-        number: table.textConfig.number
+        number: table.textConfig.number,
+        nomeCliente: table.textConfig.nomeCliente
       };
       this.editedItem = Object.assign({}, item);
       this.defaultItem = Object.assign({}, item);
@@ -286,7 +290,8 @@ export default {
         scaleY: this.editedItem.scaleY,
         angolare,
         tableName: this.editedItem.text,
-        tableNumber: this.editedItem.number
+        tableNumber: this.editedItem.number,
+        nomeCliente: this.editedItem.nomeCliente
       };
 
       if (

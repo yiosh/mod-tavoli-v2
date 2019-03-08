@@ -94,6 +94,7 @@ export const mutations = {
     tableToEdit.textConfig.number = payload.tableNumber;
     tableToEdit.textConfig.text =
       payload.tableName + (payload.tableNumber == 0 ? "" : payload.tableNumber);
+    tableToEdit.textConfig.nomeCliente = payload.nomeCliente;
   }
 };
 

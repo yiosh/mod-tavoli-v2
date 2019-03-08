@@ -16,6 +16,7 @@
             createTable(
               createTableForm.text,
               createTableForm.number,
+              createTableForm.nomeCliente,
               Number(createTableForm.size),
               1,
               1,
@@ -30,6 +31,32 @@
           v-model="valid"
         >
           <v-container>
+            <v-layout>
+              <v-flex xs12 md6>
+                <v-text-field
+                  v-model="createTableForm.text"
+                  label="Nome Tavolo"
+                  required
+                ></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 md6>
+                <v-text-field
+                  v-model="createTableForm.number"
+                  label="Numero Tavolo"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
+            <v-layout>
+              <v-flex xs12>
+                <v-text-field
+                  v-model="createTableForm.nomeCliente"
+                  label="Nome Tavolo Cliente"
+                ></v-text-field>
+              </v-flex>
+            </v-layout>
+
             <v-layout>
               <v-flex xs12 sm6 class="py-2">
                 <p>Tipo</p>
@@ -110,24 +137,6 @@
                 ></v-text-field>
               </v-flex>
             </v-layout>
-
-            <v-layout>
-              <v-flex xs12 md6>
-                <v-text-field
-                  v-model="createTableForm.text"
-                  label="Nome"
-                  :rules="nameRules"
-                  required
-                ></v-text-field>
-              </v-flex>
-
-              <v-flex xs12 md6>
-                <v-text-field
-                  v-model="createTableForm.number"
-                  label="Numero"
-                ></v-text-field>
-              </v-flex>
-            </v-layout>
           </v-container>
           <v-divider></v-divider>
           <v-container>
@@ -163,7 +172,8 @@ export default {
       scaleY: 1,
       angolare: 0,
       text: "",
-      number: 0
+      number: 0,
+      nomeCliente: ""
     },
     nameRules: [v => !!v || "Inserisci nome tavolo per procedere"]
   }),
@@ -233,6 +243,7 @@ export default {
     createTable(
       name,
       number = "",
+      nomeCliente = "",
       size,
       scaleX = 1,
       scaleY = 1,
@@ -266,7 +277,8 @@ export default {
         align: "center",
         verticalAlign: "middle",
         rotation: angolare,
-        padding: 5
+        padding: 5,
+        nomeCliente
       };
 
       let ellipseTextConfig = {
@@ -441,7 +453,8 @@ export default {
         size,
         x,
         y,
-        angolare
+        angolare,
+        nomeCliente
       };
 
       let payload = {
@@ -458,7 +471,6 @@ export default {
       this.dialog = false;
     }
   },
-  mounted() {},
   created() {
     EventBus.$on("fetch-done", () => {
       let tablesFetched = this.table.tablesFetched;
@@ -473,6 +485,7 @@ export default {
           this.createTable(
             payload.table_name,
             Number(payload.table_number),
+            payload.nome_cliente,
             Number(payload.size),
             Number(payload.scale_x),
             Number(payload.scale_y),
