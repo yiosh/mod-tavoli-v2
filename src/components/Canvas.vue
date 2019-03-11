@@ -42,6 +42,7 @@
             v-if="group.table.type === 'ellipse'"
             @click="tableSelect(group.name)"
             :ref="group.table.tableConfig.name"
+            @transformend="handleTableTransform"
             :config="group.table.tableConfig"
           ></v-ellipse>
           <v-text
@@ -64,6 +65,7 @@
 import axios from "axios";
 import Toolbar from "./Toolbar";
 import { EventBus } from "../event-bus.js";
+import _ from "lodash";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -72,7 +74,8 @@ export default {
     Toolbar
   },
   data: () => ({
-    dialog: false
+    dialog: false,
+    selectedTable: null
   }),
   computed: {
     hostname() {
@@ -158,9 +161,25 @@ export default {
         });
       // console.log(table);
     },
-    handleTableTransform(e) {
-      let table = e.target.attrs;
-      console.log("Table trans", table);
+    handleTableTransform(event) {
+      let shape = event.target.attrs;
+      let tableId = this.selectedTable.attrs.table.id;
+      let layoutId = this.$store.state.layout.id;
+      let rotation = shape.rotation.toFixed(2);
+      console.log("tableId", tableId);
+      axios
+        .get(
+          `https://${
+            this.hostname
+          }/fl_api/tables-v1/?rotate_table&token=1&table_id=${tableId}&layout_id=${layoutId}&angolare=${rotation}`
+        )
+        .then(function(response) {
+          console.log("Response", response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      console.log("Shape transformed", rotation);
     },
     stageClick(e) {
       let stage = this.$store.state.stage;
@@ -175,27 +194,35 @@ export default {
         }
       }
     },
-    tableSelect(group) {
+    tableSelect(groupName) {
       let stage = this.$store.state.stage;
-      let groupEl = stage.find("." + group)[0];
-      console.log("Target", groupEl);
-      if (this.$store.state.selectedGroup != groupEl.attrs) {
-        let name = "." + String(group) + "-tbl";
+      let group = stage.find("." + groupName)[0];
+      console.log("Target", group);
+      console.log("group", group);
+      let shape = _.find(group.children, child => {
+        return child.nodeType === "Shape";
+      });
+      console.log("Shape", shape);
+      if (this.$store.state.selectedGroup != group.attrs) {
+        let name = "." + String(groupName) + "-tbl";
         stage.find("Transformer").destroy();
         // create new transformer
         var tr = new window.Konva.Transformer({
-          rotateEnabled: false,
-          resizeEnabled: false
+          rotateEnabled: true,
+          resizeEnabled: false,
+          rotationSnaps: [0, 90, 180, 270]
         });
 
         let layer = this.$refs.layer.getStage(tr);
         tr.attachTo(stage.find(name)[0]);
-        groupEl.add(tr);
-        layer.add(groupEl);
+        group.add(tr);
+        layer.add(group);
         layer.draw();
 
-        this.$store.dispatch("selectGroup", groupEl.attrs);
-        EventBus.$emit("table-select", groupEl);
+        this.selectedTable = group;
+        console.log("selectedTable", this.selectedTable.attrs.table);
+        this.$store.dispatch("selectGroup", group.attrs);
+        EventBus.$emit("table-select", group);
       }
     }
   },
