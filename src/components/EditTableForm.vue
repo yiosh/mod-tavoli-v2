@@ -123,10 +123,10 @@
           <v-container>
             <v-layout justify-end>
               <v-flex xs12>
-                <v-btn @click="remove" dark color="error">Elimina</v-btn>
                 <v-btn :disabled="!valid" type="submit" dark color="green"
                   >Salva</v-btn
                 >
+                <v-btn @click="remove" flat dark color="error">Elimina</v-btn>
               </v-flex>
             </v-layout>
           </v-container>
