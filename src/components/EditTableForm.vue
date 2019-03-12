@@ -71,6 +71,7 @@
                 <v-slider
                   v-model="editedItem.scaleX"
                   step="0.1"
+                  min="0"
                   max="5"
                 ></v-slider>
               </v-flex>
@@ -85,6 +86,7 @@
                 <v-slider
                   v-model="editedItem.scaleY"
                   step="0.1"
+                  min="0"
                   max="5"
                 ></v-slider>
               </v-flex>
@@ -96,7 +98,7 @@
               </v-flex>
             </v-layout>
 
-            <v-layout>
+            <!-- <v-layout>
               <v-flex xs12 sm6 md6 class="py-2">
                 <p>Angolare</p>
                 <v-btn-toggle v-model="editedItem.angolare" mandatory>
@@ -115,7 +117,7 @@
                   v-model="editedItem.angolare"
                 ></v-text-field>
               </v-flex>
-            </v-layout>
+            </v-layout>-->
           </v-container>
           <v-divider></v-divider>
           <v-container>
@@ -270,17 +272,6 @@ export default {
       this.defaultItem = Object.assign({}, item);
     },
     save() {
-      let angolare =
-        (this.editedItem.angolare + this.defaultItem.angolare) % 360;
-
-      if (this.editedItem.angolare == this.defaultItem.angolare) {
-        angolare = this.editedItem.angolare;
-      }
-
-      if (this.editedItem.angolare == 0) {
-        angolare = 0;
-      }
-
       let newItem = {
         layoutId: this.$store.state.layout.id,
         id: this.editedItem.id,
@@ -288,7 +279,6 @@ export default {
         size: this.editedItem.size,
         scaleX: this.editedItem.scaleX,
         scaleY: this.editedItem.scaleY,
-        angolare,
         tableName: this.editedItem.text,
         tableNumber: this.editedItem.number,
         nomeCliente: this.editedItem.nomeCliente
@@ -298,31 +288,9 @@ export default {
         JSON.stringify(this.editedItem) !== JSON.stringify(this.defaultItem)
       ) {
         this.$store.dispatch("table/updateTable", newItem);
-        this.$store.state.stage.draw();
         this.defaultItem = Object.assign({}, newItem);
-
-        // axios
-        //   .get(
-        //     `https://${
-        //       this.$store.state.hostname
-        //     }/fl_api/tables-v1/?update_table&token=1&layout_id=${
-        //       this.$store.state.layout.id
-        //     }&table_id=${this.editedItem.id}&type_id=${this.tableTypeDeparser(
-        //       this.editedItem.type
-        //     )}&table_name=${this.editedItem.text}&table_number=${
-        //       this.editedItem.number
-        //     }&size=${this.editedItem.size}&scale_x=${
-        //       this.editedItem.scaleX
-        //     }&scale_y=${this.editedItem.scaleY}&angolare=${newItem.angolare}`
-        //   )
-        //   .then(function(response) {
-        //     console.log("Response", response);
-        //   })
-        //   .catch(function(error) {
-        //     console.log(error);
-        //   });
-        // this.$store.state.layer.draw();
       }
+      this.$store.state.stage.draw();
       this.dialog = false;
     },
     remove() {

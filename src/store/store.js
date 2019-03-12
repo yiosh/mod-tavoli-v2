@@ -41,6 +41,15 @@ export default new Vuex.Store({
   mutations: {
     SET_LAYOUT(state, payload) {
       state.layout = Object.assign({}, payload);
+      if (state.layout.orientation == 1) {
+        state.configKonva = Object.assign(
+          {},
+          {
+            width: 792,
+            height: 1200
+          }
+        );
+      }
       console.log("Layout", state.layout);
     },
     SET_STAGE(state, payload) {
@@ -52,9 +61,9 @@ export default new Vuex.Store({
     SELECT_GROUP(state, payload) {
       state.selectedGroup = payload;
     },
-    SET_ORIENTATION(state, payload) {
-      state.configKonva.width = payload.width;
-      state.configKonva.height = payload.height;
+    CHANGE_ORIENTATION(state) {
+      state.configKonva.width = 792;
+      state.configKonva.height = 1200;
     }
   },
   actions: {
@@ -74,25 +83,12 @@ export default new Vuex.Store({
     selectGroup(state, payload) {
       state.commit("SELECT_GROUP", payload);
     },
-    setOrientation(state, payload) {
-      state.commit("SET_ORIENTATION", payload);
+    changeOrientation(state, payload) {
+      state.commit("change_ORIENTATION");
     },
     setLayout({ commit, dispatch }, layoutId) {
       TMService.fetchLayout(layoutId)
         .then(response => {
-          // handle success
-          // const notification = {
-          //   type: "error",
-          //   multiLine: true,
-          //   message:
-          //     "Si è verificato un problema durante il recupero del layout: " +
-          //     error.message
-          // };
-          // dispatch("notification/add", notification, { root: true });
-          // const layout =
-          // if (condition) {
-
-          // }
           return commit("SET_LAYOUT", response.data.dati[0]);
         })
         .catch(error => {

@@ -1,6 +1,6 @@
 <template>
   <v-layout row justify-center>
-    <v-dialog max-width="1250" v-model="dialog">
+    <v-dialog :max-width="maxWidth" v-model="dialog">
       <!-- <v-btn slot="activator" @click="previewCanvas()" color="primary" dark
         >Preview</v-btn
       >-->
@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import _ from "lodash";
 import { EventBus } from "../event-bus.js";
 
 export default {
@@ -38,6 +37,12 @@ export default {
       src: null,
       dialog: false
     };
+  },
+  computed: {
+    maxWidth() {
+      let width = this.$store.state.layout.orientation != 1 ? 1250 : 850;
+      return width;
+    }
   },
   methods: {
     previewCanvas() {

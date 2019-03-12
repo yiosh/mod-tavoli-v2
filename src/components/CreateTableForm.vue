@@ -89,7 +89,7 @@
                 <v-slider
                   v-model="createTableForm.scaleX"
                   step="0.1"
-                  min="1"
+                  min="0"
                   max="5"
                 ></v-slider>
               </v-flex>
@@ -105,7 +105,7 @@
                 <v-slider
                   v-model="createTableForm.scaleY"
                   step="0.1"
-                  min="1"
+                  min="0"
                   max="5"
                 ></v-slider>
               </v-flex>
@@ -118,7 +118,7 @@
               </v-flex>
             </v-layout>
 
-            <v-layout>
+            <!-- <v-layout>
               <v-flex xs12 sm6 md6 class="py-2">
                 <p>Angolare</p>
                 <v-btn-toggle v-model="createTableForm.angolare" mandatory>
@@ -136,7 +136,7 @@
                   v-model="createTableForm.angolare"
                 ></v-text-field>
               </v-flex>
-            </v-layout>
+            </v-layout>-->
           </v-container>
           <v-divider></v-divider>
           <v-container>

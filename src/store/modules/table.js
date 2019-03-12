@@ -1,4 +1,5 @@
 import TMService from "@/services/TMService";
+import _ from "lodash";
 
 export const namespaced = true;
 
@@ -26,7 +27,6 @@ export const mutations = {
     let indexToRemove = _.findIndex(state.groups, group => {
       return group.table.id == payload;
     });
-    console.log("Index", indexToRemove);
     state.groups.splice(indexToRemove, 1);
   },
   ADD_TABLE(state, payload) {
@@ -41,26 +41,24 @@ export const mutations = {
       return group.table.id == payload.id;
     });
 
-    console.log("Edit", groupToEdit);
-
     const tableToEdit = groupToEdit.table;
-    if (payload.type == "circle") {
-      state.groups[indexToEdit].table.tableConfig.radius = payload.size;
+    if (payload.typeId == "2") {
+      tableToEdit.tableConfig.radius = payload.size;
     }
 
-    if (payload.type == "square") {
-      state.groups[indexToEdit].table.tableConfig.height = payload.size;
-      state.groups[indexToEdit].table.tableConfig.width = payload.size;
+    if (payload.typeId == "3") {
+      tableToEdit.tableConfig.height = payload.size;
+      tableToEdit.tableConfig.width = payload.size;
     }
 
-    if (payload.type == "rectangle") {
-      state.groups[indexToEdit].table.tableConfig.height = payload.size;
-      state.groups[indexToEdit].table.tableConfig.width = payload.size * 2;
+    if (payload.typeId == "4") {
+      tableToEdit.tableConfig.height = payload.size;
+      tableToEdit.tableConfig.width = payload.size * 2;
     }
 
-    if (payload.type == "ellipse") {
-      state.groups[indexToEdit].table.tableConfig.radiusX = payload.size * 2;
-      state.groups[indexToEdit].table.tableConfig.radiusY = payload.size;
+    if (payload.typeId == "5") {
+      tableToEdit.tableConfig.radiusX = payload.size * 2;
+      tableToEdit.tableConfig.radiusY = payload.size;
     }
 
     let type;
@@ -81,9 +79,6 @@ export const mutations = {
         type = "ellipse";
         break;
     }
-
-    console.log("tableToEdit", tableToEdit);
-    console.log("tableConfig", state.groups[indexToEdit].table.tableConfig);
 
     tableToEdit.tableConfig.scaleX = payload.scaleX;
     tableToEdit.tableConfig.scaleY = payload.scaleY;
@@ -164,7 +159,6 @@ export const actions = {
               error.message
           };
           dispatch("notification/add", notification, { root: true });
-          console.log(error);
         });
     }
     commit("ADD_TABLE", payload.group);
@@ -196,7 +190,6 @@ export const actions = {
   updateTable({ commit, dispatch }, payload) {
     TMService.updateTable(payload)
       .then(() => {
-        console.log("payload", payload);
         commit("UPDATE_TABLE", payload);
         const notification = {
           type: "success",
