@@ -279,6 +279,7 @@ export default {
         size: this.editedItem.size,
         scaleX: this.editedItem.scaleX,
         scaleY: this.editedItem.scaleY,
+        angolare: this.editedItem.angolare,
         tableName: this.editedItem.text,
         tableNumber: this.editedItem.number,
         nomeCliente: this.editedItem.nomeCliente
@@ -288,9 +289,10 @@ export default {
         JSON.stringify(this.editedItem) !== JSON.stringify(this.defaultItem)
       ) {
         this.$store.dispatch("table/updateTable", newItem);
+        console.log("fired");
         this.defaultItem = Object.assign({}, newItem);
+        // this.$store.state.stage.draw();
       }
-      this.$store.state.stage.draw();
       this.dialog = false;
     },
     remove() {

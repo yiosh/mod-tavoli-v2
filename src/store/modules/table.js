@@ -34,6 +34,7 @@ export const mutations = {
     state.counter++;
   },
   UPDATE_TABLE(state, payload) {
+    console.log("payload", payload);
     let indexToEdit = _.findIndex(state.groups, group => {
       return group.table.id == payload.id;
     });
@@ -83,7 +84,6 @@ export const mutations = {
     tableToEdit.tableConfig.scaleX = payload.scaleX;
     tableToEdit.tableConfig.scaleY = payload.scaleY;
     tableToEdit.type = type;
-    tableToEdit.tableConfig.rotation = Number(payload.angolare);
     tableToEdit.textConfig.name = payload.tableName;
     tableToEdit.textConfig.rotation = Number(payload.angolare);
     tableToEdit.textConfig.number = payload.tableNumber;
@@ -187,15 +187,19 @@ export const actions = {
         dispatch("notification/add", notification, { root: true });
       });
   },
-  updateTable({ commit, dispatch }, payload) {
-    TMService.updateTable(payload)
+  updateTable({ commit, dispatch, rootState }, updatedTable) {
+    TMService.updateTable(updatedTable)
       .then(() => {
-        commit("UPDATE_TABLE", payload);
+        console.log("up", updatedTable);
+        commit("UPDATE_TABLE", updatedTable);
         const notification = {
           type: "success",
           message: "Tavolo aggiornato!"
         };
-        dispatch("notification/add", notification, { root: true });
+        return dispatch("notification/add", notification, { root: true });
+      })
+      .then(() => {
+        rootState.stage.draw();
       })
       .catch(function(error) {
         const notification = {
