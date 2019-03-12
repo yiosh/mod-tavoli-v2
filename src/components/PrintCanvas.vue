@@ -82,7 +82,6 @@ export default {
   },
   created() {
     EventBus.$on("preview-select", () => {
-      console.log("recieved");
       let stage = this.$store.state.stage;
       // if click on empty area - remove all transformers
       this.$store.dispatch("selectGroup", null);

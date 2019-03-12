@@ -9,7 +9,10 @@
   >
     <Toolbar></Toolbar>
     <v-stage
-      :class="{ grid: this.$store.state.layout.orientation == 0 }"
+      :class="{
+        grid: this.$store.state.layout.orientation == 0,
+        verticalgrid: this.$store.state.layout.orientation == 1
+      }"
       @click="stageClick"
       ref="stage"
       :config="stageConfig"
@@ -65,7 +68,7 @@
 import axios from "axios";
 import Toolbar from "./Toolbar";
 import { EventBus } from "../event-bus.js";
-import _ from "lodash";
+import _find from "lodash/find";
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -91,9 +94,6 @@ export default {
     ...mapGetters({ guestTotals: "guest/guestTotals" })
   },
   methods: {
-    log(e) {
-      console.log(e);
-    },
     tableTypeDeparser(type) {
       let id;
       switch (type) {
@@ -141,7 +141,6 @@ export default {
       let tableId = this.selectedTable.attrs.table.id;
       let layoutId = this.$store.state.layout.id;
       let rotation = shape.rotation.toFixed(2);
-      console.log("tableId", tableId);
       axios
         .get(
           `https://${
@@ -154,7 +153,6 @@ export default {
         .catch(function(error) {
           console.log(error);
         });
-      console.log("Shape transformed", rotation);
     },
     stageClick(e) {
       let stage = this.$store.state.stage;
@@ -172,9 +170,7 @@ export default {
     tableSelect(groupName) {
       let stage = this.$store.state.stage;
       let group = stage.find("." + groupName)[0];
-      console.log("Target", group);
-      console.log("group", group);
-      let shape = _.find(group.children, child => {
+      let shape = _find(group.children, child => {
         return child.nodeType === "Shape";
       });
       console.log("Shape", shape);
@@ -195,7 +191,6 @@ export default {
         layer.draw();
 
         this.selectedTable = group;
-        console.log("selectedTable", this.selectedTable.attrs.table);
         this.$store.dispatch("selectGroup", group.attrs);
         EventBus.$emit("table-select", group);
       }
@@ -213,9 +208,14 @@ export default {
   background-image: url(../assets/grid.png);
 }
 
+.verticalgrid {
+  background-image: url(../assets/vertical-grid.png);
+  height: 100%;
+}
+
 .vertical {
   width: 792px;
-  height: 1200px;
+  /* height: 1200px; */
 }
 
 .horizontal {

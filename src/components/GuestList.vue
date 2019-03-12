@@ -216,7 +216,6 @@ export default {
   },
   methods: {
     editItem(item) {
-      console.log("item", item);
       item.peoples = Number(item.peoples);
       item.baby = Number(item.baby);
       item.chairs_only = Number(item.chairs_only);

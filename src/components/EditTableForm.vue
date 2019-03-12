@@ -289,7 +289,6 @@ export default {
         JSON.stringify(this.editedItem) !== JSON.stringify(this.defaultItem)
       ) {
         this.$store.dispatch("table/updateTable", newItem);
-        console.log("fired");
         this.defaultItem = Object.assign({}, newItem);
         // this.$store.state.stage.draw();
       }
@@ -297,8 +296,7 @@ export default {
     },
     remove() {
       let answer = confirm("You sure you want to remove this table?");
-      console.log("Confirm", answer);
-      if (confirm) {
+      if (answer) {
         let item = {
           layoutId: this.$store.state.layout.id,
           id: this.editedItem.id

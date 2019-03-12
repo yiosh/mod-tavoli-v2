@@ -79,7 +79,6 @@ export default {
           EventBus.$emit("guest-list-select");
           break;
         case "print":
-          console.log("clicked");
           EventBus.$emit("preview-select");
           break;
       }

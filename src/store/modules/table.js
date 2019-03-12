@@ -1,5 +1,6 @@
 import TMService from "@/services/TMService";
-import _ from "lodash";
+import _findIndex from "lodash/findIndex";
+import _find from "lodash/find";
 
 export const namespaced = true;
 
@@ -24,7 +25,7 @@ export const mutations = {
     state.tableTypes = payload;
   },
   DELETE_TABLE(state, payload) {
-    let indexToRemove = _.findIndex(state.groups, group => {
+    let indexToRemove = _findIndex(state.groups, group => {
       return group.table.id == payload;
     });
     state.groups.splice(indexToRemove, 1);
@@ -34,11 +35,11 @@ export const mutations = {
     state.counter++;
   },
   UPDATE_TABLE(state, payload) {
-    console.log("payload", payload);
-    let indexToEdit = _.findIndex(state.groups, group => {
-      return group.table.id == payload.id;
-    });
-    const groupToEdit = _.find(state.groups, group => {
+    // console.log("payload", payload);
+    // let indexToEdit = _findIndex(state.groups, group => {
+    //   return group.table.id == payload.id;
+    // });
+    const groupToEdit = _find(state.groups, group => {
       return group.table.id == payload.id;
     });
 
@@ -98,7 +99,6 @@ export const actions = {
     TMService.getTables(layoutId)
       .then(response => {
         // handle success
-        console.log("Tables Fetched:", response.data.dati);
         commit("GET_TABLES", response.data.dati);
         return layoutId;
       })
@@ -190,7 +190,6 @@ export const actions = {
   updateTable({ commit, dispatch, rootState }, updatedTable) {
     TMService.updateTable(updatedTable)
       .then(() => {
-        console.log("up", updatedTable);
         commit("UPDATE_TABLE", updatedTable);
         const notification = {
           type: "success",

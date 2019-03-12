@@ -84,7 +84,6 @@ export default {
     );
   },
   updateGuest(guest) {
-    console.log("guest", guest);
     return apiClient.get(
       `/fl_api/tables-v1/?update_guest&token=1&guest_id=${
         guest.id

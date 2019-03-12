@@ -134,7 +134,6 @@ export const actions = {
       });
   },
   updateGuestCounters({ rootState }, updatedGuest) {
-    console.log("updatedGuest", updatedGuest);
     let groupIndex = rootState.table.groups.findIndex(group => {
       return group.table.id == updatedGuest.table_id;
     });
@@ -210,7 +209,7 @@ export const getters = {
     totalText += " Sedie: " + guestTotals.chairs + ",";
     totalText += " Seggiolone: " + guestTotals.highchairs;
 
-    let y = rootState.layout.orientation == 1 ? 1070 : 750;
+    let y = rootState.layout.orientation == 1 ? 1150 : 750;
 
     let total = {
       name: "totaleCounter",

@@ -50,7 +50,6 @@ export default new Vuex.Store({
           }
         );
       }
-      console.log("Layout", state.layout);
     },
     SET_STAGE(state, payload) {
       state.stage = payload;
